@@ -37,16 +37,16 @@
             this.Browser.Location = new System.Drawing.Point(0, 0);
             this.Browser.MinimumSize = new System.Drawing.Size(20, 20);
             this.Browser.Name = "Browser";
-            this.Browser.ScrollBarsEnabled = false;
-            this.Browser.Size = new System.Drawing.Size(990, 589);
+            this.Browser.Size = new System.Drawing.Size(1020, 603);
             this.Browser.TabIndex = 0;
             this.Browser.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser1_DocumentCompleted);
+            this.Browser.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.RedirectToBrowser);
             // 
             // AuthenticationForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(990, 589);
+            this.ClientSize = new System.Drawing.Size(1020, 603);
             this.Controls.Add(this.Browser);
             this.Name = "AuthenticationForm";
             this.Text = "Log in to Facebook";

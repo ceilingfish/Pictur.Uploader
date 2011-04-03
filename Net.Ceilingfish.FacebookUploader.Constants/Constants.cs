@@ -13,5 +13,12 @@ namespace Net.Ceilingfish.FacebookUploader.Constants
 
         public const string AuthenticationLandingPage = "http://www.facebook.com/connect/login_success.html";
 
+        public static string[] AuthenticationPages = new string[]
+        {
+            "/dialog/oauth",
+            "/login.php",
+            "/connect/uiserver.php",
+            "/connect/login_success.html"
+        };
     }
 }
