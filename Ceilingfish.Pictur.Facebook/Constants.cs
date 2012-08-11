@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Net.Ceilingfish.FacebookUploader.Constants
+﻿namespace Ceilingfish.Pictur.Facebook
 {
     public class FacebookConstants
     {
