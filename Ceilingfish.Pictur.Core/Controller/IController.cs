@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows;
 
-namespace Ceilingfish.Pictur.Core
+namespace Ceilingfish.Pictur.Core.Controller
 {
-    class ManagedDirectory : DependencyObject
+    interface IController
     {
     }
 }

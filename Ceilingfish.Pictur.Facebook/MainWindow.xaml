@@ -1,13 +1,14 @@
-﻿<Window x:Class="Ceilingfish.FacebookUploader.Ui.MainWindow"
+﻿<Window x:Class="Ceilingfish.Pictur.Facebook.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MainWindow" Name="TheMainWindow" Height="350" Width="525">
     <TabControl>
         <TabItem Header="Directories">
             <Grid>
-                <DataGrid Name="ManagedDirectoryList" ItemsSource="{Binding ElementName=TheMainWindow, Path=ManagedDirectorySet}" Margin="0,0,0,45">
+                <DataGrid Name="ManagedDirectoryList" ItemsSource="{Binding ElementName=TheMainWindow, Path=ManagedDirectorySet}" Margin="0,0,0,45" AutoGenerateColumns="False">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Directory" Binding="{Binding Path=FullName}" />
+                        <DataGridTextColumn Header="Directory" Binding="{Binding Path=Path}" />
+                        <DataGridCheckBoxColumn Header="Scanning Enabled" Binding="{Binding Path=Enabled}" />
                     </DataGrid.Columns>
                 </DataGrid>
                 <TextBox Name="NewManagedDirectoryTextbox" Margin="5,0,0,8" Height="25" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="421" />
