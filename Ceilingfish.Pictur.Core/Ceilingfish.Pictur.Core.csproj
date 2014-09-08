@@ -31,11 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Dapper">
-      <HintPath>..\packages\Dapper.1.8\lib\net40\Dapper.dll</HintPath>
-    </Reference>
-    <Reference Include="Dapper.Rainbow.SQLite">
-      <HintPath>..\packages\Dapper.Rainbow.SQLite.0.1.2\lib\net40\Dapper.Rainbow.SQLite.dll</HintPath>
+    <Reference Include="Dapper, Version=1.12.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Dapper.1.12.1\lib\net40\Dapper.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -66,31 +64,16 @@
     <Compile Include="Controller\ManagedDirectoryController.cs" />
     <Compile Include="Controller\IController.cs" />
     <Compile Include="Controller\PluginController.cs" />
-    <Compile Include="Model\File.cs" />
-    <Compile Include="Model\ManagedDirectory.cs" />
-    <Compile Include="Persistence.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Persistence.edmx</DependentUpon>
-    </Compile>
+    <Compile Include="Persistence\File.cs" />
+    <Compile Include="Persistence\ManagedDirectory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>Settings.settings</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="packages.config" />
-    <EntityDeploy Include="Persistence.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>Persistence.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
     </None>
+    <None Include="Properties\DataSources\PersistenceContainer.datasource" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\ChecksumHelper.cs" />

@@ -19,9 +19,7 @@ namespace Ceilingfish.Pictur.Core
             Plugins = new PluginController();
             _database = new PersistenceController();
             
-            var db = _database.LoadDatabase();
-            
-            ManagedDirectories = new ManagedDirectoryController(db);
+            ManagedDirectories = new ManagedDirectoryController(_database);
 
             ManagedDirectories.Created += Plugins.OnFileCreated;
             ManagedDirectories.Modified += Plugins.OnFileModified;

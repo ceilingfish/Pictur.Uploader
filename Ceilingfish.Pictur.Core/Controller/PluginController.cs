@@ -1,6 +1,6 @@
 using System;
 using System.IO;
-using File = Ceilingfish.Pictur.Core.Model.File;
+using File = Ceilingfish.Pictur.Core.Persistence.File;
 
 namespace Ceilingfish.Pictur.Core.Controller
 {

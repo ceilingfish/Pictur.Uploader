@@ -1,6 +1,4 @@
-﻿using System.Windows;
-
-namespace Ceilingfish.Pictur.Facebook
+﻿namespace Ceilingfish.Pictur.Facebook
 {
     public partial class App
     {

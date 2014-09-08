@@ -1,5 +1,5 @@
 ﻿using System;
-using Ceilingfish.Pictur.Core.Model;
+using Ceilingfish.Pictur.Core.Persistence;
 
 namespace Ceilingfish.Pictur.Core.Controller
 {

@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using Ceilingfish.Pictur.Core.Helpers;
+using Ceilingfish.Pictur.Core.Persistence;
 
 namespace Ceilingfish.Pictur.Core.Controller
 {
@@ -20,26 +22,22 @@ namespace Ceilingfish.Pictur.Core.Controller
             internal ManagedDirectoryItem(ManagedDirectory dir)
             {
                 Directory = dir;
-                Watcher = new FileSystemWatcher(dir.Directory.FullName);
+                //Watcher = new FileSystemWatcher(dir.Directory.FullName);
             }
         }
 
-        private readonly List<ManagedDirectoryItem> _directories; 
-
-        private 
+        private readonly PersistenceController _persistence;
+        private readonly List<ManagedDirectoryItem> _directories = new List<ManagedDirectoryItem>(); 
 
         public ManagedDirectoryController(PersistenceController db)
         {
-            _db = db;
-            _directories = new List<ManagedDirectoryItem>();
+            _persistence = db;
         }
 
         internal void Start()
         {
-            foreach (var managedDirectory in _db.GetManagedDirectories())
+            foreach (var managedDirectory in _persistence.ManagedDirectories)
             {
-                SubmitDirectory(managedDirectory.Directory);
-
                 var item = new ManagedDirectoryItem(managedDirectory);
 
                 item.Watcher.Created += OnDirectoryItemCreated;
@@ -61,8 +59,8 @@ namespace Ceilingfish.Pictur.Core.Controller
 
         private void OnDirectoryItemRenamed(object sender, RenamedEventArgs e)
         {
-            var oldFile = _db.FindFileByPath(e.OldFullPath);
-
+            var oldFile = _persistence.Files.First(f => f.Path.Equals(e.OldFullPath));
+            
             if (oldFile == null)
                 return;
 
@@ -71,14 +69,14 @@ namespace Ceilingfish.Pictur.Core.Controller
 
         private void OnDirectoryItemDeleted(object sender, FileSystemEventArgs e)
         {
-            var f = _db.FindFileByPath(e.FullPath);
+            var f = _persistence.FindFileByPath(e.FullPath);
 
             DeleteFile(f);
         }
 
         private void OnDirectoryItemChanged(object sender, FileSystemEventArgs e)
         {
-            var file = _db.FindFileByPath(e.FullPath);
+            var file = _persistence.FindFileByPath(e.FullPath);
 
             ModifiedFile(file,e.FullPath);
         }
@@ -89,12 +87,12 @@ namespace Ceilingfish.Pictur.Core.Controller
         {
             var checksum = ChecksumHelper.GetMd5HashFromFile(file.FullName);
 
-            var newFile = new Model.File(file)
+            var newFile = new Persistence.File(file)
             {
                 Checksum = checksum
             };
 
-            _db.Create(newFile);
+            _persistence.Files.AddObject(newFile);
 
             var vetoed = false;
             if (Created != null)
@@ -105,13 +103,19 @@ namespace Ceilingfish.Pictur.Core.Controller
                 vetoed = createEvent.Cancel;
             }
 
-            if(vetoed)
-                _db.Ignore(newFile);
+            if (vetoed)
+            {
+                newFile.IsIgnored = true;
+                _persistence.Files.AddObject(newFile);
+                _persistence.Save();
+            }
+
+
         }
 
-        private void ModifiedFile(Model.File oldFile, string path)
+        private void ModifiedFile(Persistence.File oldFile, string path)
         {
-            var newFile = new Model.File(new FileInfo(path))
+            var newFile = new Persistence.File(new FileInfo(path))
             {
                 Checksum = oldFile.Checksum
             };
@@ -119,15 +123,17 @@ namespace Ceilingfish.Pictur.Core.Controller
             if (Modified != null)
                 Modified(this, new FileModifiedArgs(oldFile, newFile));
 
-            _db.UpdateFile(newFile);
+            _persistence.Files.AddObject(newFile);
+            _persistence.Save();
         }
 
-        private void DeleteFile(Model.File f)
+        private void DeleteFile(Persistence.File f)
         {
             if (Deleted != null)
                 Deleted(this, new FileDeletedArgs(f));
 
-            _db.Delete(f);
+            _persistence.Files.DeleteObject(f);
+            _persistence.Save();
         }
         
         private void SubmitDirectory(DirectoryInfo directory)
@@ -153,11 +159,11 @@ namespace Ceilingfish.Pictur.Core.Controller
         {
             var fileInfo = fileObj as FileInfo;
 
-            var file = _db.FindFileByPath(fileInfo.FullName);
+            var file = _persistence.FindFileByPath(fileInfo.FullName);
 
             var checksum = ChecksumHelper.GetMd5HashFromFile(fileInfo.FullName);
 
-            var previousFile = _db.FindFileByChecksum(checksum);
+            var previousFile = _persistence.FindFileByChecksum(checksum);
 
             //if we found a previous file, then check to see if it exists
             if(previousFile != null)

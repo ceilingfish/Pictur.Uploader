@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel;
-using File = Ceilingfish.Pictur.Core.Model.File;
+using File = Ceilingfish.Pictur.Core.Persistence.File;
 
 namespace Ceilingfish.Pictur.Core.Controller
 {

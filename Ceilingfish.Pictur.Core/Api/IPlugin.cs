@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Ceilingfish.Pictur.Core.Model;
+using Ceilingfish.Pictur.Core.Persistence;
 
 namespace Ceilingfish.Pictur.Core.Api
 {
