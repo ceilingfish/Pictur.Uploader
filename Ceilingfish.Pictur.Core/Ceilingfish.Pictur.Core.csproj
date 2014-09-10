@@ -83,23 +83,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Api\IPlugin.cs" />
-    <Compile Include="App.cs" />
-    <Compile Include="Controller\PersistenceController.cs" />
-    <Compile Include="Controller\FileCreatedArgs.cs" />
-    <Compile Include="Controller\FileDeletedArgs.cs" />
-    <Compile Include="Controller\FileModifiedArgs.cs" />
-    <Compile Include="Controller\ManagedDirectoryController.cs" />
-    <Compile Include="Controller\IController.cs" />
-    <Compile Include="Controller\PluginController.cs" />
+    <Compile Include="Events\FileAddedArgs.cs" />
+    <Compile Include="Events\FileRemovedArgs.cs" />
+    <Compile Include="Events\RecordRemoved.cs" />
+    <Compile Include="Events\RecordAdded.cs" />
+    <Compile Include="ManagedDirectoryController.cs" />
+    <Compile Include="ManagedDirectoryEventSource.cs" />
     <Compile Include="Persistence\File.cs" />
+    <Compile Include="Persistence\IDatabase.cs" />
     <Compile Include="Persistence\ManagedDirectory.cs" />
+    <Compile Include="Persistence\RavenDatabase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
-    <None Include="Properties\DataSources\PersistenceContainer.datasource" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\ChecksumHelper.cs" />
