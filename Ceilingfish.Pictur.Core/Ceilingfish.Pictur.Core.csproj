@@ -83,11 +83,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConsoleUploader.cs" />
     <Compile Include="Events\FileAddedArgs.cs" />
+    <Compile Include="Events\FileChangedArgs.cs" />
     <Compile Include="Events\FileRemovedArgs.cs" />
     <Compile Include="Events\RecordRemoved.cs" />
     <Compile Include="Events\RecordAdded.cs" />
-    <Compile Include="ManagedDirectoryController.cs" />
+    <Compile Include="BaseUploader.cs" />
     <Compile Include="ManagedDirectoryEventSource.cs" />
     <Compile Include="Persistence\File.cs" />
     <Compile Include="Persistence\IDatabase.cs" />

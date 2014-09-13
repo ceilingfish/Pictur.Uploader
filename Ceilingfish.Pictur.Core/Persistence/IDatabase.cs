@@ -5,14 +5,16 @@ namespace Ceilingfish.Pictur.Core.Persistence
 {
     public interface IDatabase
     {
-        event RecordAdded<ManagedDirectory> DirectoryAdded;
-
-        event RecordRemoved<ManagedDirectory> DirectoryRemoved;
-            
         IEnumerable<ManagedDirectory> ManagedDirectories { get; }
+
+        IEnumerable<File> Files { get; } 
 
         bool Add(ManagedDirectory directory);
 
         void Remove(ManagedDirectory directory);
+
+        File GetFileByPath(string path);
+
+        File GetFileByCheckSum(string checksum);
     }
 }

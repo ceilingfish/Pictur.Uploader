@@ -7,17 +7,13 @@ namespace Ceilingfish.Pictur.Core.Persistence
 {
     public class RavenDatabase : IDatabase
     {
-        public event RecordAdded<ManagedDirectory> DirectoryAdded;
-        public event RecordRemoved<ManagedDirectory> DirectoryRemoved;
-
         private readonly EmbeddableDocumentStore _store;
 
         public RavenDatabase(string path)
         {
             var documentStore = new EmbeddableDocumentStore
                                 {
-                                    DataDirectory = path,
-                                    DefaultDatabase = "pictur"
+                                    DataDirectory = path
                                 };
             documentStore.Initialize();
             _store = documentStore;
@@ -27,6 +23,8 @@ namespace Ceilingfish.Pictur.Core.Persistence
         {
             get { return GetDirectories(); }
         }
+
+        public IEnumerable<File> Files { get; private set; }
 
         public bool Add(ManagedDirectory directory)
         {
@@ -46,6 +44,27 @@ namespace Ceilingfish.Pictur.Core.Persistence
                 session.SaveChanges();
             }
         }
+
+        public File GetFileByPath(string path)
+        {
+            using (var session = _store.OpenSession())
+            {
+                return session
+                    .Query<File>()
+                    .SingleOrDefault(f => f.Path.Equals(path));
+            }
+        }
+
+        public File GetFileByCheckSum(string checksum)
+        {
+            using (var session = _store.OpenSession())
+            {
+                return session
+                    .Query<File>()
+                    .SingleOrDefault(f => f.Checksum.Equals(checksum));
+            }
+        }
+
 
         private IEnumerable<ManagedDirectory> GetDirectories()
         {
