@@ -5,8 +5,8 @@
     <TabControl HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
         <TabItem Header="Directories" Margin="0,0,0,0">
             <Grid Background="#FFE5E5E5">
-                <DataGrid Margin="0,40,-0.2,0">
-                    <DataGridTextColumn Header="Path" Width="*"></DataGridTextColumn>
+                <DataGrid Margin="0,40,-0.2,0" Name="ManagedDirectoryGrid">
+                    <DataGridTextColumn Binding="{Binding Path=Path}" Header="Path" Width="*" />
                 </DataGrid>
                 <TextBox x:Name="NewDirectoryPathTextField" Height="23" Margin="5,10,97.8,0" TextWrapping="Wrap" VerticalAlignment="Top" TextChanged="OnNewDirectoryPathChanged"/>
                 <Button x:Name="AddDirectoryButton" Content="Add" Margin="0,10,4.8,0" VerticalAlignment="Top" Height="23" HorizontalAlignment="Right" Width="36" Click="OnAddDirectoryClicked" IsEnabled="{Binding ElementName=TheWindow, Path=IsValidNewDirectory}" />

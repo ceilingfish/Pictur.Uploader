@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Forms;
@@ -24,10 +27,14 @@ namespace Ceilingfish.Pictur.Uploader.Desktop
             var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                 "Ceilingfish.Uploadr", "Persistence.Raven");
             _db = new RavenDatabase(path);
+
             _source = new ManagedDirectoryEventSource(_db.ManagedDirectories);
             var consoleUploader = new ConsoleUploader(_db);
             _source.Added += consoleUploader.OnFileAdded;
             _source.Removed += consoleUploader.OnFileRemoved;
+
+            ManagedDirectoryGrid.Items.Clear();
+            ManagedDirectoryGrid.ItemsSource = new ObservableCollection<ManagedDirectory>(_db.ManagedDirectories);
         }
 
         private void OnBrowseForDirectoryClicked(object sender, RoutedEventArgs e)
@@ -61,7 +68,7 @@ namespace Ceilingfish.Pictur.Uploader.Desktop
 
         private void OnNewDirectoryPathChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            AddDirectoryButton.GetBindingExpression(System.Windows.Controls.Button.IsEnabledProperty).UpdateTarget();
+            AddDirectoryButton.GetBindingExpression(IsEnabledProperty).UpdateTarget();
         }
     }
 }
