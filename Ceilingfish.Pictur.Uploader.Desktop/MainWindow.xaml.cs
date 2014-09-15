@@ -53,6 +53,10 @@ namespace Ceilingfish.Pictur.Uploader.Desktop
             
             _db.Add(directory);
             _source.Add(directory);
+
+            var viewItems = ManagedDirectoryGrid.ItemsSource as ObservableCollection<ManagedDirectory>;
+
+            viewItems.Add(directory);
         }
 
         public bool IsValidNewDirectory
