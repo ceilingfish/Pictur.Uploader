@@ -62,9 +62,9 @@ namespace Ceilingfish.Pictur.Core
             _directories.Add(new WatchedDirectory(directory, this));
         }
 
-        public void Remove(ManagedDirectory directory)
+        public void Remove(ManagedDirectory dir)
         {
-            _directories.RemoveAll(wd => wd.Directory.Equals(directory));
+            _directories.RemoveAll(wd => wd.Directory.Id.Equals(dir.Id));
         }
 
         public event EventHandler<FileAddedArgs> Added;

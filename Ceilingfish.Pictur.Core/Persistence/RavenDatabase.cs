@@ -36,12 +36,16 @@ namespace Ceilingfish.Pictur.Core.Persistence
             }
         }
 
-        public void Remove(ManagedDirectory directory)
+        public bool Remove(ManagedDirectory directory)
         {
             using (var session = _store.OpenSession())
             {
-                session.Delete(directory);
+                var sessionThinger = session.Load<ManagedDirectory>(directory.Id);
+                if (sessionThinger == null)
+                    return false;
+                session.Delete(sessionThinger);
                 session.SaveChanges();
+                return true;
             }
         }
 

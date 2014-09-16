@@ -11,7 +11,7 @@ namespace Ceilingfish.Pictur.Core.Persistence
 
         bool Add(ManagedDirectory directory);
 
-        void Remove(ManagedDirectory directory);
+        bool Remove(ManagedDirectory directory);
 
         File GetFileByPath(string path);
 

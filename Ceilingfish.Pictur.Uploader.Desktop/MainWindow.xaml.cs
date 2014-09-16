@@ -9,6 +9,7 @@ using Ceilingfish.Pictur.Core;
 using Ceilingfish.Pictur.Core.Persistence;
 using System.IO;
 using Microsoft.Win32;
+using System.Windows.Documents;
 
 namespace Ceilingfish.Pictur.Uploader.Desktop
 {
@@ -73,6 +74,34 @@ namespace Ceilingfish.Pictur.Uploader.Desktop
         private void OnNewDirectoryPathChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             AddDirectoryButton.GetBindingExpression(IsEnabledProperty).UpdateTarget();
+        }
+
+        private void OnEditDirectoryClicked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void OnRemoveDirectoryClicked(object sender, RoutedEventArgs e)
+        {
+            var hyperlink = e.OriginalSource as Hyperlink;
+
+            var decision = System.Windows.MessageBox.Show("Are you sure you wish to remove this directory? Uploaded files will not be removed", "Confirm Directory Remove", MessageBoxButton.YesNo);
+
+            if (decision == MessageBoxResult.Yes)
+            {
+                var viewItems = ManagedDirectoryGrid.ItemsSource as ObservableCollection<ManagedDirectory>;
+                var sourceDir = hyperlink.DataContext as ManagedDirectory;
+                var matches = _db.ManagedDirectories.Where(d => d.Id.Equals(sourceDir.Id));
+
+                foreach (var dir in matches)
+                {
+                    _db.Remove(dir);
+                    _source.Remove(dir);
+
+                    var removableViewItem = viewItems.Single(d => d.Id.Equals(dir.Id));
+                    viewItems.Remove(removableViewItem);
+                }
+            }
         }
     }
 }
