@@ -16,5 +16,9 @@ namespace Ceilingfish.Pictur.Core.Persistence
         File GetFileByPath(string path);
 
         File GetFileByCheckSum(string checksum);
+
+        void Update(File current);
+
+        void Add(File newFile);
     }
 }

@@ -79,5 +79,20 @@ namespace Ceilingfish.Pictur.Core.Persistence
                     .ToArray();
             }
         }
+
+
+        public void Update(File current)
+        {
+            using (var session = _store.OpenSession())
+            {
+                session.Store(current);
+                session.SaveChanges();
+            }
+        }
+
+        public void Add(File newFile)
+        {
+            Update(newFile);
+        }
     }
 }

@@ -7,18 +7,14 @@ using Ceilingfish.Pictur.Core.Persistence;
 
 namespace Ceilingfish.Pictur.Core
 {
-    public class ConsoleUploader : BaseUploader
+    public class ConsoleUploader
     {
-        public ConsoleUploader(IDatabase db) : base(db)
-        {
-        }
-
-        protected override void Upload(File file)
+        public void Upload(File file)
         {
             Console.WriteLine("Uploading {0}",file.Path);
         }
 
-        protected override void Delete(File file)
+        public void Delete(File file)
         {
             Console.WriteLine("Removing {0}", file.Path);
         }
