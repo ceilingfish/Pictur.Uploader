@@ -1,0 +1,26 @@
+﻿<UserControl x:Class="Ceilingfish.Pictur.Uploader.Desktop.ManagedDirectoryControls"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <DataGrid Margin="0,40,-0.2,0" x:Name="ManagedDirectoryGrid" IsReadOnly="True" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Path}" Header="Path" Width="Auto" />
+                <DataGridTemplateColumn Width="*" Header="Actions">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock><Hyperlink Click="OnEditDirectoryClicked"><Run Text="Edit"/></Hyperlink><Run Text=" "/><Hyperlink Click="OnRemoveDirectoryClicked"><Run Text="Remove"/></Hyperlink></TextBlock>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+        <TextBox x:Name="NewDirectoryPathTextField" Height="23" Margin="5,10,97.8,0" TextWrapping="Wrap" VerticalAlignment="Top" TextChanged="OnNewDirectoryPathChanged"/>
+        <Button x:Name="AddDirectoryButton" Content="Add" Margin="0,10,4.8,0" VerticalAlignment="Top" Height="23" HorizontalAlignment="Right" Width="36" Click="OnAddDirectoryClicked" IsEnabled="{Binding IsValidNewDirectory, ElementName=TheWindow}" />
+
+        <Button x:Name="BrowseNewDirectoryButton" Content="Browse" Margin="0,10,45.8,0" VerticalAlignment="Top" Height="23" HorizontalAlignment="Right" Width="47" Click="OnBrowseForDirectoryClicked"/>
+    </Grid>
+</UserControl>

@@ -21,43 +21,52 @@ namespace Ceilingfish.Pictur.Core
         public void OnFileRemoved(object sender, FileRemovedArgs args)
         {
             var current = _database.GetFileByPath(args.FilePath);
-
             if (current == null)
                 return;
 
             current.ModifiedAt = DateTime.UtcNow;
-            current.FileRemoved = true; 
-
             _database.Update(current);
         }
 
         public void OnFileAdded(object sender, FileAddedArgs args)
         {
-            UploadFileIfNecessary(args.FilePath, args.Directory);
+            AddFile(args.FilePath, args.Directory);
         }
 
         public void OnFileDetected(object sender, FileDetectedArgs args)
         {
-            UploadFileIfNecessary(args.FilePath, args.Directory);
+            AddFile(args.FilePath, args.Directory);
         }
 
-        private void UploadFileIfNecessary(string path, ManagedDirectory directory)
+        public void OnFileModified(object sender, FileChangedArgs args)
+        {
+            var file = _database.GetFileByPath(args.OriginalPath);
+            if (!string.Equals(args.OriginalPath, args.NewPath))
+            {
+                file.Path = args.NewPath;
+            }
+
+            file.ModifiedAt = DateTime.UtcNow;
+            _database.Update(file);
+
+            var synchronisations = _database.GetHarmonizationsByFile(file.Id);
+            foreach (var sync in synchronisations)
+            {
+                if (sync.State != HarmonizationState.Ready)
+                {
+                    sync.State = HarmonizationState.Ready;
+                    _database.Update(sync);
+                }
+            }
+        }
+
+        private void AddFile(string path, ManagedDirectory directory)
         {
             var checksum = ChecksumHelper.GetMd5HashFromFile(path);
-
             var current = _database.GetFileByCheckSum(checksum);
+            if (current != null)
+                return;
 
-            if (current != null && current.Path.Equals(path))
-            {
-                if (current.FileRemoved)
-                {
-                    //looks like a file has been restored
-                    current.FileRemoved = false;
-                    current.ModifiedAt = DateTime.UtcNow;
-                    _database.Update(current);
-                }
-
-            }
             var newFile = new Persistence.File
             {
                 Path = path,

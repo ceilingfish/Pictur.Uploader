@@ -7,9 +7,17 @@ namespace Ceilingfish.Pictur.Core.Persistence
     {
         IEnumerable<ManagedDirectory> ManagedDirectories { get; }
 
-        IEnumerable<File> Files { get; } 
+        IEnumerable<File> RecentlyModifiedFiles { get; }
 
-        bool Add(ManagedDirectory directory);
+        void Add(File newFile);
+
+        void Add(FileHarmonization harmonization);
+
+        void Add(ManagedDirectory directory);
+
+        void Update(File current);
+
+        void Update(FileHarmonization harmonization);
 
         bool Remove(ManagedDirectory directory);
 
@@ -17,8 +25,6 @@ namespace Ceilingfish.Pictur.Core.Persistence
 
         File GetFileByCheckSum(string checksum);
 
-        void Update(File current);
-
-        void Add(File newFile);
+        IEnumerable<FileHarmonization> GetHarmonizationsByFile(string id);
     }
 }

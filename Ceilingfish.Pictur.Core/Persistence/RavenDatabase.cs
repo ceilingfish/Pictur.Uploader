@@ -24,18 +24,6 @@ namespace Ceilingfish.Pictur.Core.Persistence
             get { return GetDirectories(); }
         }
 
-        public IEnumerable<File> Files { get; private set; }
-
-        public bool Add(ManagedDirectory directory)
-        {
-            using (var session = _store.OpenSession())
-            {
-                session.Store(directory);
-                session.SaveChanges();
-                return true;
-            }
-        }
-
         public bool Remove(ManagedDirectory directory)
         {
             using (var session = _store.OpenSession())
@@ -69,6 +57,15 @@ namespace Ceilingfish.Pictur.Core.Persistence
             }
         }
 
+        public IEnumerable<FileHarmonization> GetHarmonizationsByFile(string id)
+        {
+            using (var session = _store.OpenSession())
+            {
+                return session
+                    .Query<FileHarmonization>()
+                    .Where(f => f.FileId.Equals(id));
+            }
+        }
 
         private IEnumerable<ManagedDirectory> GetDirectories()
         {
@@ -80,19 +77,53 @@ namespace Ceilingfish.Pictur.Core.Persistence
             }
         }
 
+        public IEnumerable<File> RecentlyModifiedFiles
+        {
+            get 
+            {
+                using (var session = _store.OpenSession())
+                {
+                    return session.Query<File>()
+                                    .OrderBy(c => c.ModifiedAt)
+                                    .Take(20)
+                                    .ToArray();
+                }
+            }
+
+        }
+
+        public void Add(ManagedDirectory directory)
+        {
+            UpdateRecord(directory);
+        }
+
+        public void Update(FileHarmonization current)
+        {
+            UpdateRecord(current);
+        }
 
         public void Update(File current)
+        {
+            UpdateRecord(current);
+        }
+
+        public void Add(File newFile)
+        {
+            UpdateRecord(newFile);
+        }
+
+        public void Add(FileHarmonization harmonization)
+        {
+            UpdateRecord(harmonization);
+        }
+
+        private void UpdateRecord<T>(T current)
         {
             using (var session = _store.OpenSession())
             {
                 session.Store(current);
                 session.SaveChanges();
             }
-        }
-
-        public void Add(File newFile)
-        {
-            Update(newFile);
         }
     }
 }
