@@ -1,4 +1,5 @@
-﻿using Ceilingfish.Pictur.Core.Persistence;
+﻿using Ceilingfish.Pictur.Core.Models;
+using Ceilingfish.Pictur.Core.Persistence;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -15,46 +16,33 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Ceilingfish.Pictur.Core.Pipeline;
 
 namespace Ceilingfish.Pictur.Uploader.Desktop
 {
     /// <summary>
     /// Interaction logic for FileStatus.xaml
     /// </summary>
-    public partial class FileStatus : UserControl
+    public partial class FileStatus : IExecutor
     {
-        private readonly CancellationTokenSource _token = new CancellationTokenSource();
-
         internal IDatabase Database { get; set; }
 
         public FileStatus()
         {
             InitializeComponent();
-           // Task.Run((Action)RefreshRecent, _token.Token);
         }
 
         internal void RefreshRecent()
         {
-            while (!_token.IsCancellationRequested)
-            {
-                Dispatcher.Invoke(UpdateRecentFiles);
-                Thread.Sleep(100);
-            }
-        }
-
-        internal void UpdateRecentFiles()
-        {
-            if (Database == null)
-                return;
-
             Recent.ItemsSource = Database
-                                    .RecentlyModifiedFiles
-                                    .Select(f => new DbFileStatus(f));
+                                .Files
+                                .RecentlyModified
+                                .Select(f => new DbFileStatus(f));
         }
 
-        internal void StopRefresh()
+        public void Execute(FileOperation op)
         {
-            _token.Cancel();
+            
         }
 
         class DbFileStatus

@@ -1,17 +1,13 @@
-﻿using Ceilingfish.Pictur.Core.Persistence;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+using Ceilingfish.Pictur.Core.Models;
 
 namespace Ceilingfish.Pictur.Core.Events
 {
     public class DirectoryAddedArgs : EventArgs
     {
-        public readonly ManagedDirectory Directory;
+        public readonly Directory Directory;
 
-        public DirectoryAddedArgs(ManagedDirectory d)
+        public DirectoryAddedArgs(Directory d)
         {
             Directory = d;
         }

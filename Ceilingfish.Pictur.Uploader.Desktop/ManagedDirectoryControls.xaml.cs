@@ -1,23 +1,17 @@
-﻿using Ceilingfish.Pictur.Core;
-using Ceilingfish.Pictur.Core.Events;
-using Ceilingfish.Pictur.Core.Persistence;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Forms;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using Ceilingfish.Pictur.Core;
+using Ceilingfish.Pictur.Core.Events;
+using Ceilingfish.Pictur.Core.Models;
+using MessageBox = System.Windows.MessageBox;
+using Ceilingfish.Pictur.Core.Persistence;
+using Directory = System.IO.Directory;
 
 namespace Ceilingfish.Pictur.Uploader.Desktop
 {
@@ -26,10 +20,6 @@ namespace Ceilingfish.Pictur.Uploader.Desktop
     /// </summary>
     public partial class ManagedDirectoryControls
     {
-        public event EventHandler<DirectoryAddedArgs> Added;
-
-        public event EventHandler<DirectoryRemovedArgs> Removed;
-
         public ManagedDirectoryControls()
         {
             InitializeComponent();
@@ -43,15 +33,8 @@ namespace Ceilingfish.Pictur.Uploader.Desktop
             {
                 _db = value;
                 ManagedDirectoryGrid.Items.Clear();
-                ManagedDirectoryGrid.ItemsSource = new ObservableCollection<ManagedDirectory>(_db.ManagedDirectories);
+                ManagedDirectoryGrid.ItemsSource = new ObservableCollection<Core.Models.Directory>(_db.Directories);
             }
-        }
-
-        private ManagedDirectoryWatcher _watcher;
-        internal ManagedDirectoryWatcher Watcher
-        {
-            get { return _watcher; }
-            set { _watcher = value; }
         }
 
         private void OnBrowseForDirectoryClicked(object sender, RoutedEventArgs e)
@@ -60,22 +43,19 @@ namespace Ceilingfish.Pictur.Uploader.Desktop
 
             var result = dialog.ShowDialog();
 
-            if (result == System.Windows.Forms.DialogResult.OK)
+            if (result == DialogResult.OK)
                 NewDirectoryPathTextField.Text = dialog.SelectedPath;
         }
 
         private void OnAddDirectoryClicked(object sender, RoutedEventArgs e)
         {
-            var directory = new ManagedDirectory { Path = NewDirectoryPathTextField.Text };
+            var directory = new Core.Models.Directory { Path = Path.GetFullPath(NewDirectoryPathTextField.Text) };
 
-            _db.Add(directory);
-            _watcher.Add(directory);
+            _db.Directories.Add(directory);
 
-            var viewItems = ManagedDirectoryGrid.ItemsSource as ObservableCollection<ManagedDirectory>;
+            var viewItems = ManagedDirectoryGrid.ItemsSource as ObservableCollection<Core.Models.Directory>;
 
             viewItems.Add(directory);
-
-            Added(this, new DirectoryAddedArgs(directory));
         }
 
         public bool IsValidNewDirectory
@@ -83,13 +63,16 @@ namespace Ceilingfish.Pictur.Uploader.Desktop
             get
             {
                 var path = NewDirectoryPathTextField.Text;
-                return !string.IsNullOrEmpty(path)
-                    && Directory.Exists(path)
-                    && !_db.ManagedDirectories.Any(d => d.Path.Equals(path));
+                if (string.IsNullOrEmpty(path))
+                    return false;
+                path = Path.GetFullPath(path);
+
+                return Directory.Exists(path)
+                    && !_db.Directories.Any(d => d.Path.Equals(path));
             }
         }
 
-        private void OnNewDirectoryPathChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        private void OnNewDirectoryPathChanged(object sender, TextChangedEventArgs e)
         {
             AddDirectoryButton.GetBindingExpression(IsEnabledProperty).UpdateTarget();
         }
@@ -103,23 +86,18 @@ namespace Ceilingfish.Pictur.Uploader.Desktop
         {
             var hyperlink = e.OriginalSource as Hyperlink;
 
-            var decision = System.Windows.MessageBox.Show("Are you sure you wish to remove this directory? Uploaded files will not be removed", "Confirm Directory Remove", MessageBoxButton.YesNo);
+            var decision = MessageBox.Show("Are you sure you wish to remove this directory? Uploaded files will not be removed", "Confirm Directory Remove", MessageBoxButton.YesNo);
 
             if (decision == MessageBoxResult.Yes)
             {
-                var viewItems = ManagedDirectoryGrid.ItemsSource as ObservableCollection<ManagedDirectory>;
-                var sourceDir = hyperlink.DataContext as ManagedDirectory;
-                var matches = _db.ManagedDirectories.Where(d => d.Id.Equals(sourceDir.Id));
+                var sourceDir = hyperlink.DataContext as Core.Models.Directory;
+                var dir = _db.Directories.Single(d => d.Id.Equals(sourceDir.Id));
 
-                foreach (var dir in matches)
-                {
-                    _db.Remove(dir);
-                    _watcher.Remove(dir);
+                _db.Directories.Remove(dir);
 
-                    var removableViewItem = viewItems.Single(d => d.Id.Equals(dir.Id));
-                    viewItems.Remove(removableViewItem);
-                    Removed(this, new DirectoryRemovedArgs(dir));
-                }
+                var viewItems = ManagedDirectoryGrid.ItemsSource as ObservableCollection<Core.Models.Directory>;
+                var removableViewItem = viewItems.Single(d => d.Id.Equals(dir.Id));
+                viewItems.Remove(removableViewItem);
             }
         }
     }

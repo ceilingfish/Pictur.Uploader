@@ -1,30 +1,14 @@
-﻿using System.Collections.Generic;
-using Ceilingfish.Pictur.Core.Events;
+﻿using Ceilingfish.Pictur.Core.Models;
+using Ceilingfish.Pictur.Core.Persistence;
 
 namespace Ceilingfish.Pictur.Core.Persistence
 {
     public interface IDatabase
     {
-        IEnumerable<ManagedDirectory> ManagedDirectories { get; }
+        FileCollection Files { get; }
 
-        IEnumerable<File> RecentlyModifiedFiles { get; }
+        RavenPersistenceCollection<Directory> Directories { get; }
 
-        void Add(File newFile);
-
-        void Add(FileHarmonization harmonization);
-
-        void Add(ManagedDirectory directory);
-
-        void Update(File current);
-
-        void Update(FileHarmonization harmonization);
-
-        bool Remove(ManagedDirectory directory);
-
-        File GetFileByPath(string path);
-
-        File GetFileByCheckSum(string checksum);
-
-        IEnumerable<FileHarmonization> GetHarmonizationsByFile(string id);
+        RemoveFileCollection RemovedFileOperations { get; }
     }
 }

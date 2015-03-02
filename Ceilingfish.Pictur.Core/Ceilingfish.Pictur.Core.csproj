@@ -56,6 +56,9 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.6.0.5\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\packages\NLog.3.0.0.0\lib\net45\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="Raven.Abstractions">
       <HintPath>..\packages\RavenDB.Client.2.5.2916\lib\net45\Raven.Abstractions.dll</HintPath>
     </Reference>
@@ -67,6 +70,15 @@
     </Reference>
     <Reference Include="Raven.Database">
       <HintPath>..\packages\RavenDB.Database.2.5.2916\lib\net45\Raven.Database.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog">
+      <HintPath>..\packages\Serilog.1.4.196\lib\net45\Serilog.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.FullNetFx">
+      <HintPath>..\packages\Serilog.1.4.196\lib\net45\Serilog.FullNetFx.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Sinks.NLog">
+      <HintPath>..\packages\Serilog.Sinks.NLog.1.4.196\lib\net45\Serilog.Sinks.NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -83,25 +95,31 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConsolePlugin.cs" />
-    <Compile Include="DatabaseFileVerifier.cs" />
+    <Compile Include="FileSystem\AddedFileEnumerator.cs" />
+    <Compile Include="Persistence\DirectoryChangePoller.cs" />
+    <Compile Include="Pipeline\DebugExecutor.cs" />
     <Compile Include="Events\DirectoryAddedArgs.cs" />
     <Compile Include="Events\DirectoryRemovedArgs.cs" />
-    <Compile Include="Events\FileAddedArgs.cs" />
-    <Compile Include="Events\FileChangedArgs.cs" />
-    <Compile Include="Events\FileDetectedArgs.cs" />
-    <Compile Include="Events\FileRemovedArgs.cs" />
-    <Compile Include="IHarmonizer.cs" />
-    <Compile Include="ManagedDirectoryWatcher.cs" />
-    <Compile Include="ManagedDirectoryScanner.cs" />
-    <Compile Include="Persistence\DeletedFile.cs" />
-    <Compile Include="Persistence\File.cs" />
-    <Compile Include="Persistence\FileHarmonization.cs" />
-    <Compile Include="Persistence\HarmonizationState.cs" />
+    <Compile Include="FileSystem\FileSystemEventSource.cs" />
+    <Compile Include="FileSystem\IFileScanEnumerator.cs" />
+    <Compile Include="FileSystem\ModifiedFileEnumerator.cs" />
+    <Compile Include="FileSystem\RemovedFileEnumerator.cs" />
+    <Compile Include="FileSystem\DirectoryWatcher.cs" />
+    <Compile Include="Models\File.cs" />
+    <Compile Include="Persistence\FileCollection.cs" />
     <Compile Include="Persistence\IDatabase.cs" />
-    <Compile Include="Persistence\ManagedDirectory.cs" />
+    <Compile Include="Models\BaseRecord.cs" />
+    <Compile Include="Models\Directory.cs" />
+    <Compile Include="Persistence\RavenPersistenceCollection.cs" />
     <Compile Include="Persistence\RavenDatabase.cs" />
+    <Compile Include="Models\RemovedFileOperation.cs" />
+    <Compile Include="Persistence\RemoveFileCollection.cs" />
+    <Compile Include="Pipeline\FileOperation.cs" />
+    <Compile Include="Pipeline\FileOperationType.cs" />
+    <Compile Include="Pipeline\MovedFileOperation.cs" />
+    <Compile Include="Pipeline\IExecutor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="FileSystem\WatchedDirectory.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Ceilingfish.Pictur.Core.Events;
+﻿using System;
+using Ceilingfish.Pictur.Core.Models;
+using Ceilingfish.Pictur.Core.Persistence;
 using Raven.Client.Embedded;
 
 namespace Ceilingfish.Pictur.Core.Persistence
 {
-    public class RavenDatabase : IDatabase
+    public class RavenDatabase : IDatabase, IDisposable
     {
         private readonly EmbeddableDocumentStore _store;
 
@@ -18,112 +18,25 @@ namespace Ceilingfish.Pictur.Core.Persistence
             documentStore.Initialize();
             _store = documentStore;
         }
-        
-        public IEnumerable<ManagedDirectory> ManagedDirectories
+
+        public FileCollection Files
         {
-            get { return GetDirectories(); }
+            get { return new FileCollection(_store); }
         }
 
-        public bool Remove(ManagedDirectory directory)
+        public RavenPersistenceCollection<Directory> Directories
         {
-            using (var session = _store.OpenSession())
-            {
-                var sessionThinger = session.Load<ManagedDirectory>(directory.Id);
-                if (sessionThinger == null)
-                    return false;
-                session.Delete(sessionThinger);
-                session.SaveChanges();
-                return true;
-            }
+            get { return new RavenPersistenceCollection<Directory>(_store); }
         }
 
-        public File GetFileByPath(string path)
+        public RemoveFileCollection RemovedFileOperations
         {
-            using (var session = _store.OpenSession())
-            {
-                return session
-                    .Query<File>()
-                    .SingleOrDefault(f => f.Path.Equals(path));
-            }
+            get { return new RemoveFileCollection(_store); }
         }
 
-        public File GetFileByCheckSum(string checksum)
+        public void Dispose()
         {
-            using (var session = _store.OpenSession())
-            {
-                return session
-                    .Query<File>()
-                    .SingleOrDefault(f => f.Checksum.Equals(checksum));
-            }
-        }
-
-        public IEnumerable<FileHarmonization> GetHarmonizationsByFile(string id)
-        {
-            using (var session = _store.OpenSession())
-            {
-                return session
-                    .Query<FileHarmonization>()
-                    .Where(f => f.FileId.Equals(id));
-            }
-        }
-
-        private IEnumerable<ManagedDirectory> GetDirectories()
-        {
-            using (var session = _store.OpenSession())
-            {
-                return session
-                    .Query<ManagedDirectory>()
-                    .ToArray();
-            }
-        }
-
-        public IEnumerable<File> RecentlyModifiedFiles
-        {
-            get 
-            {
-                using (var session = _store.OpenSession())
-                {
-                    return session.Query<File>()
-                                    .OrderBy(c => c.ModifiedAt)
-                                    .Take(20)
-                                    .ToArray();
-                }
-            }
-
-        }
-
-        public void Add(ManagedDirectory directory)
-        {
-            UpdateRecord(directory);
-        }
-
-        public void Update(FileHarmonization current)
-        {
-            UpdateRecord(current);
-        }
-
-        public void Update(File current)
-        {
-            UpdateRecord(current);
-        }
-
-        public void Add(File newFile)
-        {
-            UpdateRecord(newFile);
-        }
-
-        public void Add(FileHarmonization harmonization)
-        {
-            UpdateRecord(harmonization);
-        }
-
-        private void UpdateRecord<T>(T current)
-        {
-            using (var session = _store.OpenSession())
-            {
-                session.Store(current);
-                session.SaveChanges();
-            }
+            _store.Dispose();
         }
     }
 }
