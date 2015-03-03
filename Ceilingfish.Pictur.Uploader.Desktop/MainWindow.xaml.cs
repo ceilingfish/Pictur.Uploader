@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using Ceilingfish.Pictur.Core.FileSystem;
 using Ceilingfish.Pictur.Core.Persistence;
@@ -21,15 +22,12 @@ namespace Ceilingfish.Pictur.Uploader.Desktop
                 "Ceilingfish.Uploadr", "Persistence.Raven");
             var db = new RavenDatabase(path);
             _cancellationToken = new CancellationTokenSource();
-            var executor = new WpfDispatchExecutor(FileStatus.Dispatcher, FileStatus);
 
             InitializeComponent();
             DirectoryControls.Database = db;
             FileStatus.Database = db;
-            FileStatus.RefreshRecent();
+            FileStatus.PollForChanges(_cancellationToken.Token);
 
-            var systemScanner = new FileSystemEventSource(db, executor);
-            systemScanner.InitialScan(1, _cancellationToken.Token);
         }
 
         protected override void OnClosing(CancelEventArgs e)

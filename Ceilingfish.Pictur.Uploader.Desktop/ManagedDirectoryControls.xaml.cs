@@ -56,6 +56,8 @@ namespace Ceilingfish.Pictur.Uploader.Desktop
             var viewItems = ManagedDirectoryGrid.ItemsSource as ObservableCollection<Core.Models.Directory>;
 
             viewItems.Add(directory);
+
+            NewDirectoryPathTextField.Text = "";
         }
 
         public bool IsValidNewDirectory

@@ -16,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using Ceilingfish.Pictur.Core.Pipeline;
 
 namespace Ceilingfish.Pictur.Uploader.Desktop
@@ -23,7 +24,7 @@ namespace Ceilingfish.Pictur.Uploader.Desktop
     /// <summary>
     /// Interaction logic for FileStatus.xaml
     /// </summary>
-    public partial class FileStatus : IExecutor
+    public partial class FileStatus
     {
         internal IDatabase Database { get; set; }
 
@@ -40,10 +41,6 @@ namespace Ceilingfish.Pictur.Uploader.Desktop
                                 .Select(f => new DbFileStatus(f));
         }
 
-        public void Execute(FileOperation op)
-        {
-            
-        }
 
         class DbFileStatus
         {
@@ -55,6 +52,22 @@ namespace Ceilingfish.Pictur.Uploader.Desktop
                 Path = file.Path;
                 Name = System.IO.Path.GetFileName(file.Path);
             }
+        }
+
+        internal void PollForChanges(CancellationToken cancellationToken)
+        {
+            var timer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(10)
+            };
+
+            timer.Tick += (sender, args) =>
+            {
+                RefreshRecent();
+            };
+            timer.Start();
+
+            cancellationToken.Register(timer.Stop);
         }
     }
 }

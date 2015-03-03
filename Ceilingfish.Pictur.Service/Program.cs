@@ -14,10 +14,10 @@ namespace Ceilingfish.Pictur.Service
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
-        static void Main()
+        static void Main(string[] args)
         {
 
-            if (Console.IsInputRedirected)
+            if (!args.Contains("-console"))
             {
                 Log.Logger = new LoggerConfiguration()
                     .WriteTo
@@ -37,11 +37,13 @@ namespace Ceilingfish.Pictur.Service
 
                 Console.WriteLine("Ctrl-C to exit");
 
-                ConsoleKeyInfo key = Console.ReadKey();
+                var key = Console.ReadKey();
                 while (!(key.Modifiers == ConsoleModifiers.Control && key.Key == ConsoleKey.C))
                 {
                     key = Console.ReadKey();
                 }
+                token.Cancel();
+                uploader.Wait();
             }
         }
     }
