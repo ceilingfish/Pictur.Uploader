@@ -97,6 +97,7 @@
   <ItemGroup>
     <Compile Include="FileSystem\AddedFileEnumerator.cs" />
     <Compile Include="Persistence\DirectoryChangePoller.cs" />
+    <Compile Include="Pipeline\CommitFileToDatabaseExecutor.cs" />
     <Compile Include="Pipeline\DebugExecutor.cs" />
     <Compile Include="Events\DirectoryAddedArgs.cs" />
     <Compile Include="Events\DirectoryRemovedArgs.cs" />
@@ -112,8 +113,7 @@
     <Compile Include="Models\Directory.cs" />
     <Compile Include="Persistence\RavenPersistenceCollection.cs" />
     <Compile Include="Persistence\RavenDatabase.cs" />
-    <Compile Include="Models\RemovedFileOperation.cs" />
-    <Compile Include="Persistence\RemoveFileCollection.cs" />
+    <Compile Include="Pipeline\ExecutorChain.cs" />
     <Compile Include="Pipeline\FileOperation.cs" />
     <Compile Include="Pipeline\FileOperationType.cs" />
     <Compile Include="Pipeline\MovedFileOperation.cs" />

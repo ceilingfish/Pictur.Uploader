@@ -8,7 +8,5 @@ namespace Ceilingfish.Pictur.Core.Persistence
         FileCollection Files { get; }
 
         RavenPersistenceCollection<Directory> Directories { get; }
-
-        RemoveFileCollection RemovedFileOperations { get; }
     }
 }

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Ceilingfish.Pictur.Core.Models;
 
 namespace Ceilingfish.Pictur.Core
 {
@@ -35,7 +36,7 @@ namespace Ceilingfish.Pictur.Core
         {
             var oldPath = Path.GetFullPath(e.OldFullPath);
             var newPath = Path.GetFullPath(e.FullPath);
-            var checksum = ChecksumHelper.GetMd5HashFromFile(oldPath);
+            var checksum = ChecksumHelper.GetMd5HashFromFile(newPath);
             var previousFiles = _db.Files.GetByPathAndChecksum(oldPath, checksum);
 
             foreach (var file in previousFiles)
@@ -65,7 +66,11 @@ namespace Ceilingfish.Pictur.Core
             var removedFiles = _db.Files.GetByPath(path);
 
             foreach (var removed in removedFiles)
+            {
+                removed.Deleted = true;
+                _db.Files.Update(removed);
                 _executor.Execute(new FileOperation(removed, FileOperationType.Removed));
+            }
         }
 
         public void Start()

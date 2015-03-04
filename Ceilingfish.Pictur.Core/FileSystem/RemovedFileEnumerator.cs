@@ -20,15 +20,10 @@ namespace Ceilingfish.Pictur.Core.FileSystem
 
         public IEnumerable<Models.File> Scan()
         {
-            foreach (var file in _db.Files)
-            {
-                if (System.IO.File.Exists(file.Path))
-                    continue;
-
-                var removeOp = _db.RemovedFileOperations.GetByFileId(file.Id);
-                if (removeOp == null)
-                    yield return file;
-            }
+            return _db
+                    .Files
+                    .Where(f => !f.Deleted)
+                    .Where(file => !System.IO.File.Exists(file.Path));
         }
     }
 }

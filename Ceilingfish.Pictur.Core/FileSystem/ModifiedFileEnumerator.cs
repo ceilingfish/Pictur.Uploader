@@ -19,7 +19,7 @@ namespace Ceilingfish.Pictur.Core.FileSystem
 
         public IEnumerable<Models.File> Scan()
         {
-            foreach (var file in _db.Files)
+            foreach (var file in _db.Files.Where(f => !f.Deleted))
             {
                 if (!File.Exists(file.Path))
                     continue;

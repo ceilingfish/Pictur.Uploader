@@ -8,5 +8,6 @@ namespace Ceilingfish.Pictur.Core.Models
         public string DirectoryId { get; set; }
         public string Checksum { get; set; }
         public string Path { get; set; }
+        public bool Deleted { get; set; }
     }
 }

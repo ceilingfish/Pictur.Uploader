@@ -21,7 +21,7 @@ namespace Ceilingfish.Pictur.Core.Persistence
                 using (var session = Store.OpenSession())
                 {
                     var lastDay = DateTime.UtcNow.Subtract(TimeSpan.FromDays(1));
-                    return session.Query<Models.File>().Where(f => f.ModifiedAt > lastDay);
+                    return session.Query<Models.File>().Where(f => f.ModifiedAt > lastDay && !f.Deleted);
                 }
             }
         }
@@ -31,7 +31,7 @@ namespace Ceilingfish.Pictur.Core.Persistence
             using (var session = Store.OpenSession())
             {
                 path = Path.GetFullPath(path);
-                return session.Query<Models.File>().Where(f => f.Path.Equals(path, StringComparison.CurrentCultureIgnoreCase));
+                return session.Query<Models.File>().Where(f => f.Path.Equals(path, StringComparison.CurrentCultureIgnoreCase) && !f.Deleted);
             }
         }
 
@@ -39,7 +39,7 @@ namespace Ceilingfish.Pictur.Core.Persistence
         {
             using (var session = Store.OpenSession())
             {
-                return session.Query<Models.File>().Where(f => f.Checksum.Equals(checksum));
+                return session.Query<Models.File>().Where(f => f.Checksum.Equals(checksum) && !f.Deleted);
             }
         }
 
@@ -48,7 +48,7 @@ namespace Ceilingfish.Pictur.Core.Persistence
             using (var session = Store.OpenSession())
             {
                 return session.Query<Models.File>()
-                    .Where(f => f.Checksum.Equals(checksum) && f.Path.Equals(path));
+                    .Where(f => f.Checksum.Equals(checksum) && f.Path.Equals(path) && !f.Deleted);
             }
         }
     }

@@ -29,11 +29,6 @@ namespace Ceilingfish.Pictur.Core.Persistence
             get { return new RavenPersistenceCollection<Directory>(_store); }
         }
 
-        public RemoveFileCollection RemovedFileOperations
-        {
-            get { return new RemoveFileCollection(_store); }
-        }
-
         public void Dispose()
         {
             _store.Dispose();

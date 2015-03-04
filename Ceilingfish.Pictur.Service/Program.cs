@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.ServiceProcess;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Serilog;
 
 namespace Ceilingfish.Pictur.Service
@@ -35,14 +32,18 @@ namespace Ceilingfish.Pictur.Service
                 var uploader = new Uploader(token.Token);
                 uploader.Execute();
 
-                Console.WriteLine("Ctrl-C to exit");
-
-                var key = Console.ReadKey();
-                while (!(key.Modifiers == ConsoleModifiers.Control && key.Key == ConsoleKey.C))
+                if (!Console.IsInputRedirected)
                 {
-                    key = Console.ReadKey();
+                    Console.WriteLine("Ctrl-C to exit");
+
+                    var key = Console.ReadKey();
+                    while (!(key.Modifiers == ConsoleModifiers.Control && key.Key == ConsoleKey.C))
+                    {
+                        key = Console.ReadKey();
+                    }
+
+                    token.Cancel();
                 }
-                token.Cancel();
                 uploader.Wait();
             }
         }
