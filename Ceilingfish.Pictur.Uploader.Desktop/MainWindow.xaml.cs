@@ -26,6 +26,7 @@ namespace Ceilingfish.Pictur.Uploader.Desktop
             InitializeComponent();
             DirectoryControls.Database = db;
             FileStatus.Database = db;
+            DirectoryControls.RefreshDirectories();
             FileStatus.PollForChanges(_cancellationToken.Token);
 
         }

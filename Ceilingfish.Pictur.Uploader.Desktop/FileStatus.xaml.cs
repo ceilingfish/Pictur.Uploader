@@ -54,6 +54,7 @@ namespace Ceilingfish.Pictur.Uploader.Desktop
 
         internal void PollForChanges(CancellationToken cancellationToken)
         {
+            RefreshRecent();
             var timer = new DispatcherTimer
             {
                 Interval = TimeSpan.FromSeconds(10)

@@ -32,9 +32,13 @@ namespace Ceilingfish.Pictur.Uploader.Desktop
             set
             {
                 _db = value;
-                ManagedDirectoryGrid.Items.Clear();
-                ManagedDirectoryGrid.ItemsSource = new ObservableCollection<Core.Models.Directory>(_db.Directories);
             }
+        }
+
+        internal void RefreshDirectories()
+        {
+            ManagedDirectoryGrid.Items.Clear();
+            ManagedDirectoryGrid.ItemsSource = new ObservableCollection<Core.Models.Directory>(_db.Directories);
         }
 
         private void OnBrowseForDirectoryClicked(object sender, RoutedEventArgs e)
