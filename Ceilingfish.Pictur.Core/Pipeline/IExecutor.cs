@@ -8,6 +8,6 @@ namespace Ceilingfish.Pictur.Core.Pipeline
 {
     public interface IExecutor
     {
-        void Execute(FileOperation op);
+        void Execute(ExecutorContext op);
     }
 }

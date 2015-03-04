@@ -5,17 +5,21 @@ using System.Threading.Tasks;
 using Ceilingfish.Pictur.Core.FileSystem;
 using Ceilingfish.Pictur.Core.Persistence;
 using Ceilingfish.Pictur.Core.Pipeline;
+using Serilog;
 
 namespace Ceilingfish.Pictur.Service
 {
     public class Uploader
     {
+        private static readonly ILogger Log = Serilog.Log.Logger.ForContext<Uploader>();
         private readonly CancellationToken _token;
+        private readonly CancellationTokenSource _errorCancellation;
         private Task _task;
 
         public Uploader(CancellationToken token)
         {
-            _token = token;
+            _errorCancellation = new CancellationTokenSource();
+            _token = CancellationTokenSource.CreateLinkedTokenSource(token, _errorCancellation.Token).Token;
         }
 
         public Task Execute()
@@ -32,7 +36,13 @@ namespace Ceilingfish.Pictur.Service
                 "Ceilingfish.Uploadr", "Persistence.Raven");
             using (var db = new RavenDatabase(path))
             {
-                var executor = new DebugExecutor();
+                var executor = new ExceptionHandlingExecutor(new ExecutorChain
+                {
+                    new DebugExecutor(),
+                    new CommitFileToDatabaseExecutor(db)
+                });
+
+                executor.Exception += HandleExecutorException;
 
                 var watcher = new DirectoryWatcher(db, executor);
                 var directoryChangePoller = new DirectoryChangePoller(db.Directories, watcher, TimeSpan.FromMinutes(1));
@@ -46,6 +56,12 @@ namespace Ceilingfish.Pictur.Service
                 directoryChangePoller.Stop();
                 watcher.Stop();
             }
+        }
+
+        private void HandleExecutorException(object sender, ExecutorExceptionArgs executorExceptionArgs)
+        {
+            Log.Fatal(executorExceptionArgs.Exception, "Unhandled exception processing @executorExceptionArgs.Context", executorExceptionArgs);
+            _errorCancellation.Cancel();
         }
 
         internal void Wait()

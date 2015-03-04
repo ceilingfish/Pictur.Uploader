@@ -1,40 +1,53 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ceilingfish.Pictur.Core.Pipeline
 {
-    public class ExecutorChain : IExecutor
+    public class ExecutorChain : IExecutor, IEnumerable<IExecutor>
     {
-        private readonly List<IExecutor> _executors = new List<IExecutor>(); 
+        private readonly List<IExecutor> _executors = new List<IExecutor>();
 
-        public void Execute(FileOperation op)
+        public void Execute(ExecutorContext op)
         {
-            
+            List<Exception> errors;
+            if (!ExecuteChain(op, out errors))
+                throw new AggregateException(errors);
         }
 
-        private IEnumerable<Exception> ExecuteChain(FileOperation op)
+        private bool ExecuteChain(ExecutorContext op, out List<Exception> errors)
         {
+            errors = null;
             foreach (var executor in _executors)
             {
-                
+                try
+                {
+                    executor.Execute(op);
+                }
+                catch (Exception e)
+                {
+                    if (errors == null)
+                        errors = new List<Exception>();
+                    errors.Add(e);
+                }
             }
-            try
-            {
 
-            }
-            catch (Exception e)
-            {
-                yield return e;
-                throw;
-            }
+            return errors == null;
         }
 
         public void Add(IExecutor executor)
         {
             _executors.Add(executor);
+        }
+
+        public IEnumerator<IExecutor> GetEnumerator()
+        {
+            return _executors.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

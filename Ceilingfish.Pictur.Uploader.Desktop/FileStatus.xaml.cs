@@ -35,12 +35,10 @@ namespace Ceilingfish.Pictur.Uploader.Desktop
 
         internal void RefreshRecent()
         {
-            Recent.ItemsSource = Database
-                                .Files
-                                .RecentlyModified
-                                .Select(f => new DbFileStatus(f));
-        }
+            var recentlyModified = Database.Files.RecentlyModified.ToArray();
 
+            Recent.ItemsSource = recentlyModified.Select(f => new DbFileStatus(f));
+        }
 
         class DbFileStatus
         {

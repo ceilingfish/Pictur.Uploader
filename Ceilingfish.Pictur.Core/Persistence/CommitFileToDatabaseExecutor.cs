@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Ceilingfish.Pictur.Core.Persistence;
+﻿using Ceilingfish.Pictur.Core.Pipeline;
 
-namespace Ceilingfish.Pictur.Core.Pipeline
+namespace Ceilingfish.Pictur.Core.Persistence
 {
     public class CommitFileToDatabaseExecutor : IExecutor
     {
@@ -16,7 +11,7 @@ namespace Ceilingfish.Pictur.Core.Pipeline
             _db = db;
         }
 
-        public void Execute(FileOperation op)
+        public void Execute(ExecutorContext op)
         {
             switch (op.Type)
             {
@@ -24,7 +19,7 @@ namespace Ceilingfish.Pictur.Core.Pipeline
                     _db.Files.Add(op.File);
                     break;
                 case FileOperationType.Moved:
-                    var movedOp = op as MovedFileOperation;
+                    var movedOp = op as MovedExecutorContext;
                     var file = movedOp.File;
                     file.Path = movedOp.NewPath;
                     _db.Files.Update(file);

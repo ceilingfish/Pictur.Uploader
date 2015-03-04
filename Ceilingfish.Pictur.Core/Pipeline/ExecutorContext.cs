@@ -2,12 +2,12 @@
 
 namespace Ceilingfish.Pictur.Core.Pipeline
 {
-    public class FileOperation
+    public class ExecutorContext
     {
         public readonly Models.File File;
         public readonly FileOperationType Type;
 
-        public FileOperation(Models.File file, FileOperationType type)
+        public ExecutorContext(Models.File file, FileOperationType type)
         {
             File = file;
             Type = type;

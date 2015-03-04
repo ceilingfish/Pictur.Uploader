@@ -40,7 +40,7 @@ namespace Ceilingfish.Pictur.Core
             var previousFiles = _db.Files.GetByPathAndChecksum(oldPath, checksum);
 
             foreach (var file in previousFiles)
-                _executor.Execute(new MovedFileOperation(file, oldPath, newPath));
+                _executor.Execute(new MovedExecutorContext(file, oldPath, newPath));
         }
 
         internal void OnFileChanged(object sender, FileSystemEventArgs e)
@@ -49,7 +49,7 @@ namespace Ceilingfish.Pictur.Core
             var modifiedFiles = _db.Files.GetByPath(path);
 
             foreach (var modified in modifiedFiles)
-                _executor.Execute(new FileOperation(modified, FileOperationType.Modified));
+                _executor.Execute(new ExecutorContext(modified, FileOperationType.Modified));
         }
 
         internal void OnFileCreated(object sender, FileSystemEventArgs e)
@@ -57,7 +57,7 @@ namespace Ceilingfish.Pictur.Core
             var path = Path.GetFullPath(e.FullPath);
             var checksum = ChecksumHelper.GetMd5HashFromFile(path);
             var file = new Models.File { Path = path, DirectoryId = Directory.Id, Checksum = checksum };
-            _executor.Execute(new FileOperation(file, FileOperationType.Added));
+            _executor.Execute(new ExecutorContext(file, FileOperationType.Added));
         }
 
         internal void OnFileRemoved(object sender, FileSystemEventArgs e)
@@ -69,7 +69,7 @@ namespace Ceilingfish.Pictur.Core
             {
                 removed.Deleted = true;
                 _db.Files.Update(removed);
-                _executor.Execute(new FileOperation(removed, FileOperationType.Removed));
+                _executor.Execute(new ExecutorContext(removed, FileOperationType.Removed));
             }
         }
 

@@ -34,17 +34,17 @@ namespace Ceilingfish.Pictur.Core.FileSystem
 
         internal void OnFileAdded(File file)
         {
-            _pipeline.Execute(new FileOperation(file, FileOperationType.Added));
+            _pipeline.Execute(new ExecutorContext(file, FileOperationType.Added));
         }
 
         internal void OnFileModified(File file)
         {
-            _pipeline.Execute(new FileOperation(file, FileOperationType.Modified));
+            _pipeline.Execute(new ExecutorContext(file, FileOperationType.Modified));
         }
 
         internal void OnFileRemoved(File file)
         {
-            _pipeline.Execute(new FileOperation(file, FileOperationType.Removed));
+            _pipeline.Execute(new ExecutorContext(file, FileOperationType.Removed));
         }
     }
 }
