@@ -1,18 +1,11 @@
-﻿using Ceilingfish.Pictur.Core.Events;
+﻿using System.IO;
 using Ceilingfish.Pictur.Core.Helpers;
 using Ceilingfish.Pictur.Core.Persistence;
 using Ceilingfish.Pictur.Core.Pipeline;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Ceilingfish.Pictur.Core.Models;
 
-namespace Ceilingfish.Pictur.Core
+namespace Ceilingfish.Pictur.Core.FileSystem
 {
+    //TODO de-duplicate events
     public class WatchedDirectory
     {
         internal readonly Models.Directory Directory;

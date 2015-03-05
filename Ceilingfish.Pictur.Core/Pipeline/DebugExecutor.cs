@@ -7,7 +7,7 @@ namespace Ceilingfish.Pictur.Core.Pipeline
         private static readonly ILogger Log = Serilog.Log.Logger.ForContext<DebugExecutor>();
         public void Execute(ExecutorContext op)
         {
-            Log.Information("Peforming {@op}", op);
+            Log.Information("{FilePath} has been {OperationType}", op.File.Path, op.Type);
         }
     }
 }
