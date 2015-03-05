@@ -1,23 +1,9 @@
-﻿using Ceilingfish.Pictur.Core.Models;
-using Ceilingfish.Pictur.Core.Persistence;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
-using Ceilingfish.Pictur.Core.Pipeline;
+using Ceilingfish.Pictur.Core.Models;
+using Ceilingfish.Pictur.Core.Persistence;
 
 namespace Ceilingfish.Pictur.Uploader.Desktop
 {
@@ -67,6 +53,12 @@ namespace Ceilingfish.Pictur.Uploader.Desktop
             timer.Start();
 
             cancellationToken.Register(timer.Stop);
+        }
+
+        private void ClickResetButton(object sender, System.Windows.RoutedEventArgs e)
+        {
+            Database.Files.Clear();
+            RefreshRecent();
         }
     }
 }

@@ -83,5 +83,18 @@ namespace Ceilingfish.Pictur.Core.Persistence
                 return true;
             }
         }
+
+        public void Clear()
+        {
+            using (var session = Store.OpenSession())
+            {
+                var records = session.Query<T>();
+                foreach (var record in records)
+                {
+                    session.Delete(record);
+                }
+                session.SaveChanges();
+            }
+        }
     }
 }
