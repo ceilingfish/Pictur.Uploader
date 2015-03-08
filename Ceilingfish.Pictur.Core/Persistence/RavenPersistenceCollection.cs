@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Ceilingfish.Pictur.Core.Models;
+using Raven.Client;
 using Raven.Client.Embedded;
 
 namespace Ceilingfish.Pictur.Core.Persistence
@@ -9,9 +10,9 @@ namespace Ceilingfish.Pictur.Core.Persistence
     public class RavenPersistenceCollection<T> : IEnumerable<T>
         where T : BaseRecord
     {
-        protected readonly EmbeddableDocumentStore Store;
+        protected readonly IDocumentStore Store;
 
-        public RavenPersistenceCollection(EmbeddableDocumentStore store)
+        public RavenPersistenceCollection(IDocumentStore store)
         {
             Store = store;
         }

@@ -6,8 +6,13 @@ using System.Threading.Tasks;
 
 namespace Ceilingfish.Pictur.Core.Pipeline
 {
-    public interface IExecutor
+    public interface IExecutor<T>
+        where T : ExecutorContext
     {
-        void Execute(ExecutorContext op);
+        void Execute(T context);
+    }
+
+    public interface IExecutor : IExecutor<ExecutorContext>
+    {
     }
 }

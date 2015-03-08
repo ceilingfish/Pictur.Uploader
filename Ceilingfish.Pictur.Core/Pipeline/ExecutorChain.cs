@@ -8,7 +8,7 @@ namespace Ceilingfish.Pictur.Core.Pipeline
     {
         private readonly List<IExecutor> _executors = new List<IExecutor>();
 
-        public void Execute(ExecutorContext op)
+        public virtual void Execute(ExecutorContext op)
         {
             List<Exception> errors;
             if (!ExecuteChain(op, out errors))

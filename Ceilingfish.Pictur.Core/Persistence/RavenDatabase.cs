@@ -1,4 +1,5 @@
 ﻿using System;
+using Ceilingfish.Pictur.Core.Flickr;
 using Ceilingfish.Pictur.Core.Models;
 using Ceilingfish.Pictur.Core.Persistence;
 using Raven.Client.Embedded;
@@ -28,6 +29,17 @@ namespace Ceilingfish.Pictur.Core.Persistence
         {
             get { return new RavenPersistenceCollection<Directory>(_store); }
         }
+
+        Settings IDatabase.Settings
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public PluginResourceCollection<FlickrUpload> FlickrUploads
+        {
+            get { return new PluginResourceCollection<FlickrUpload>(_store); }
+        }
+
 
         public void Dispose()
         {

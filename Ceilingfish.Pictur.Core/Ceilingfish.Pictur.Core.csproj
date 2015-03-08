@@ -34,6 +34,12 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FlickrNet">
+      <HintPath>..\packages\FlickrNet.3.15.0\lib\net20\FlickrNet.dll</HintPath>
+    </Reference>
+    <Reference Include="Magick.NET-AnyCPU">
+      <HintPath>..\packages\Magick.NET-Q16-AnyCPU.7.0.0.0010\lib\net40-client\Magick.NET-AnyCPU.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Data.Edm, Version=5.6.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.Data.Edm.5.6.2\lib\net40\Microsoft.Data.Edm.dll</HintPath>
@@ -85,6 +91,7 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Security" />
     <Reference Include="System.Spatial, Version=5.6.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -96,8 +103,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileSystem\AddedFileEnumerator.cs" />
+    <Compile Include="Flickr\FlickrPipeline.cs" />
+    <Compile Include="Flickr\FlickrUpload.cs" />
+    <Compile Include="Flickr\Settings.cs" />
+    <Compile Include="Flickr\UploadNewImageExecutor.cs" />
+    <Compile Include="ImageMagick\ImageDetectionFilter.cs" />
+    <Compile Include="Models\PluginResource.cs" />
+    <Compile Include="Persistence\Settings.cs" />
     <Compile Include="Persistence\DirectoryChangePoller.cs" />
     <Compile Include="Persistence\CommitFileToDatabaseExecutor.cs" />
+    <Compile Include="Persistence\PluginResourceCollection.cs" />
     <Compile Include="Pipeline\DebugExecutor.cs" />
     <Compile Include="Events\DirectoryAddedArgs.cs" />
     <Compile Include="Events\DirectoryRemovedArgs.cs" />
@@ -130,9 +145,7 @@
   <ItemGroup>
     <Compile Include="Helpers\ChecksumHelper.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Flickr\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

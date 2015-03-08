@@ -4,12 +4,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Raven.Client;
 
 namespace Ceilingfish.Pictur.Core.Persistence
 {
     public class FileCollection : RavenPersistenceCollection<Models.File>
     {
-        public FileCollection(EmbeddableDocumentStore store)
+        public FileCollection(IDocumentStore store)
             : base(store)
         {
         }
