@@ -114,7 +114,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="LowCeremonyConvention.cs" />
-    <Compile Include="Persistence\RavenPersistenceCollectionTest.cs" />
+    <Compile Include="Persistence\RavenPersistenceCollectionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

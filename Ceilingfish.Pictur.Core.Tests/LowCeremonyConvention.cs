@@ -1,8 +1,10 @@
 ﻿
 ﻿using Fixie;
 using System;
-using System.Linq;
+﻿using System.Collections.Generic;
+﻿using System.Linq;
 using System.Reflection;
+﻿using NUnit.Framework;
 
 namespace Ceilingfish.Picture.Core.Tests
 {
@@ -53,23 +55,63 @@ namespace Ceilingfish.Picture.Core.Tests
 
     public static class BehaviorBuilderExtensions
     {
+        public static void InvokeAll<TAttribute>(this Type type, object instance)
+            where TAttribute : Attribute
+        {
+            foreach (var method in Has<TAttribute>(type))
+            {
+                try
+                {
+                    method.Invoke(instance, null);
+                }
+                catch (TargetInvocationException exception)
+                {
+                    throw new PreservedException(exception.InnerException);
+                }
+            }
+        }
+
+        static IEnumerable<MethodInfo> Has<TAttribute>(Type type)
+            where TAttribute : Attribute
+        {
+            return type.GetMethods(BindingFlags.Public | BindingFlags.Instance)
+                .Where(x => x.HasOrInherits<TAttribute>());
+        }
+
         public static void TryInvoke(this Type type, string method, object instance)
         {
-            var lifecycleMethod =
+            var lifecycleMethods =
                 type.GetMethods(BindingFlags.Public | BindingFlags.Instance)
-                    .SingleOrDefault(x => x.HasSignature(typeof(void), method));
+                    .Where(x => x.HasSignature(typeof(void), method))
+                    .OrderBy(m =>
+                    {
+                        var currentType = m.DeclaringType;
+                        int count = 0;
+                        while (typeof(object) != currentType)
+                        {
+                            currentType = currentType.BaseType;
+                            count++;
+                        }
 
-            if (lifecycleMethod == null)
-                return;
+                        return count;
+                    });
 
-            try
+            var problems = new List<Exception>();
+            foreach (var lifeCycleMethod in lifecycleMethods)
             {
-                lifecycleMethod.Invoke(instance, null);
+                try
+                {
+                    lifeCycleMethod.Invoke(instance, null);
+                }
+                catch (TargetInvocationException exception)
+                {
+                    problems.Add(exception);
+                }
             }
-            catch (TargetInvocationException exception)
-            {
-                throw new PreservedException(exception.InnerException);
-            }
+
+            if (problems.Any())
+                throw new AggregateException(string.Format("Problem setting up {0} for type {1}", method, type.FullName), problems);
+
         }
     }
 }
