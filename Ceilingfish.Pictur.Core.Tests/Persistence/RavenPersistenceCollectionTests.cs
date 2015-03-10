@@ -19,6 +19,8 @@ namespace Ceilingfish.Pictur.Core.Tests.Persistence
         private string _path;
         protected RavenPersistenceCollection<MockRecord> PersistenceCollection;
         protected EmbeddableDocumentStore DocumentStore;
+        protected MockRecord Record;
+        protected string RecordId;
 
         public void SetUp()
         {
@@ -30,6 +32,9 @@ namespace Ceilingfish.Pictur.Core.Tests.Persistence
             };
             DocumentStore.Initialize();
             PersistenceCollection = new RavenPersistenceCollection<MockRecord>(DocumentStore);
+            RecordId = Guid.NewGuid().ToString();
+            Record = new MockRecord { Name = "the original", Id = RecordId };
+            PersistenceCollection.Add(Record);
         }
 
         public void TearDown()
@@ -79,33 +84,95 @@ namespace Ceilingfish.Pictur.Core.Tests.Persistence
 
         public class Update_RavenPersistenceCollectionTests : RavenPersistenceCollectionTests
         {
-            private MockRecord _record;
-
-            public new void SetUp()
-            {
-                _record = new MockRecord { Name = "the original" };
-                PersistenceCollection.Add(_record);
-            }
-
             public void ShouldStoreModifiedRecord()
             {
-                var newVersion = PersistenceCollection[_record.Id];
+                var newVersion = PersistenceCollection[RecordId];
                 newVersion.Name = "the new";
                 PersistenceCollection.Update(newVersion);
 
                 using (var session = DocumentStore.OpenSession())
                 {
-                    var stored = session.Load<MockRecord>(_record.Id);
+                    var stored = session.Load<MockRecord>(Record.Id);
                     Assert.AreEqual(stored.Name, "the new");
                 }
             }
 
             public void ShouldUpdateModifiedAtDate()
             {
-                var newVersion = PersistenceCollection[_record.Id];
+                var newVersion = PersistenceCollection[RecordId];
                 newVersion.Name = "the new";
                 PersistenceCollection.Update(newVersion);
-                Assert.Less(_record.ModifiedAt, newVersion.ModifiedAt);
+                Assert.Less(Record.ModifiedAt, newVersion.ModifiedAt);
+            }
+        }
+
+        public class Remove_RavenPersistenceCollectionTests : RavenPersistenceCollectionTests
+        {
+            public void ShouldRemoveRecord()
+            {
+                PersistenceCollection.Remove(Record);
+
+                using (var session = DocumentStore.OpenSession())
+                {
+                    var nothing = session.Load<MockRecord>(RecordId);
+                    Assert.IsNull(nothing);
+                }
+            }
+        }
+
+        public class Clear_RavenPersistenceCollectionTests : RavenPersistenceCollectionTests
+        {
+            public void ShouldDeleteAllRecords()
+            {
+                PersistenceCollection.Add(new MockRecord { Name = "angry" });
+                PersistenceCollection.Clear();
+                Assert.IsFalse(PersistenceCollection.Any());
+            }
+        }
+
+        public class IndexOperator_RavenPersistenceCollectionTests : RavenPersistenceCollectionTests
+        {
+            public void ShouldGetRecordsByPrimaryKey()
+            {
+                var storedItem = PersistenceCollection[RecordId];
+                Assert.IsNotNull(storedItem);
+                Assert.AreEqual(storedItem.Name, Record.Name);
+            }
+
+            public void ShouldAddRecordIfPrimaryKeyDoesNotExist()
+            {
+                var newRecord = new MockRecord { Name = "geoffer" };
+                PersistenceCollection["kittenhat"] = newRecord;
+
+                using (var session = DocumentStore.OpenSession())
+                {
+                    var stored = session.Load<MockRecord>("kittenhat");
+                    Assert.IsNotNull(stored);
+                    Assert.AreEqual(stored.Id, "kittenhat");
+                    Assert.AreEqual(stored.Name, "geoffer");
+                }
+            }
+
+            public void ShouldUpdateRecordIfPrimaryKeyExists()
+            {
+                var newRecord = new MockRecord { Name = "wump" };
+                PersistenceCollection[RecordId] = newRecord;
+
+                using (var session = DocumentStore.OpenSession())
+                {
+                    var stored = session.Load<MockRecord>(RecordId);
+                    Assert.IsNotNull(stored);
+                    Assert.AreEqual(stored.Id, RecordId);
+                    Assert.AreEqual(stored.Name, "wump");
+                }
+            }
+        }
+
+        public class Enumerable_RavenPersistenceCollectionTests : RavenPersistenceCollectionTests
+        {
+            public void ShouldEnumerateOverAllRecords()
+            {
+
             }
         }
     }
