@@ -35,9 +35,9 @@ namespace Ceilingfish.Pictur.Core.Persistence
             get { throw new NotImplementedException(); }
         }
 
-        public PluginResourceCollection<FlickrUpload> FlickrUploads
+        public FlickrUploadCollection FlickrUploads
         {
-            get { return new PluginResourceCollection<FlickrUpload>(_store); }
+            get { return new FlickrUploadCollection(_store); }
         }
 
 

@@ -13,6 +13,6 @@ namespace Ceilingfish.Pictur.Core.Persistence
 
         Settings Settings { get; }
 
-        PluginResourceCollection<FlickrUpload> FlickrUploads { get; }
+        FlickrUploadCollection FlickrUploads { get; }
     }
 }

@@ -4,18 +4,21 @@ using System.Collections.Generic;
 
 namespace Ceilingfish.Pictur.Core.Pipeline
 {
-    public class ExecutorChain : IExecutor, IEnumerable<IExecutor>
-    {
-        private readonly List<IExecutor> _executors = new List<IExecutor>();
+    public class ExecutorChain : ExecutorChain<ExecutorContext> { }
 
-        public virtual void Execute(ExecutorContext op)
+    public class ExecutorChain<T> : IExecutor<T>, IEnumerable<IExecutor<T>>
+        where T : ExecutorContext
+    {
+        private readonly List<IExecutor<T>> _executors = new List<IExecutor<T>>();
+
+        public virtual void Execute(T op)
         {
             List<Exception> errors;
             if (!ExecuteChain(op, out errors))
                 throw new AggregateException(errors);
         }
 
-        private bool ExecuteChain(ExecutorContext op, out List<Exception> errors)
+        private bool ExecuteChain(T op, out List<Exception> errors)
         {
             errors = null;
             foreach (var executor in _executors)
@@ -35,12 +38,12 @@ namespace Ceilingfish.Pictur.Core.Pipeline
             return errors == null;
         }
 
-        public void Add(IExecutor executor)
+        public void Add(IExecutor<T> executor)
         {
             _executors.Add(executor);
         }
 
-        public IEnumerator<IExecutor> GetEnumerator()
+        public IEnumerator<IExecutor<T>> GetEnumerator()
         {
             return _executors.GetEnumerator();
         }

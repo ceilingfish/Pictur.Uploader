@@ -6,20 +6,29 @@ using System.Threading.Tasks;
 
 namespace Ceilingfish.Pictur.Core.Pipeline
 {
-    public class ExceptionHandlingExecutor : IExecutor
+    public class ExceptionHandlingExecutor : ExceptionHandlingExecutor<ExecutorContext>, IExecutor
+    {
+        public ExceptionHandlingExecutor(IExecutor<ExecutorContext> exe)
+            : base(exe)
+        {
+        }
+    }
+
+    public class ExceptionHandlingExecutor<T> : IExecutor<T>
+        where T : ExecutorContext
     {
         public EventHandler<ExecutorExceptionArgs> Exception;
 
-        private readonly IExecutor _internalExecutor;
+        private readonly IExecutor<T> _internalExecutor;
 
-        public ExceptionHandlingExecutor(IExecutor exe)
+        public ExceptionHandlingExecutor(IExecutor<T> exe)
         {
             if (exe == null)
                 throw new ArgumentException("non null executor");
             _internalExecutor = exe;
         }
 
-        public void Execute(ExecutorContext op)
+        public void Execute(T op)
         {
             try
             {

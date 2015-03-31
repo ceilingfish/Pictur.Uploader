@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using Ceilingfish.Pictur.Core.Persistence;
+﻿using Ceilingfish.Pictur.Core.Persistence;
 using Ceilingfish.Pictur.Core.Pipeline;
 
 namespace Ceilingfish.Pictur.Core.Flickr
 {
-    public class UploadNewImageExecutor : IExecutor
+    public class UploadNewImageExecutor : IExecutor<FlickrContext>
     {
         private readonly IDatabase _db;
 
@@ -18,7 +12,7 @@ namespace Ceilingfish.Pictur.Core.Flickr
             _db = db;
         }
 
-        public void Execute(ExecutorContext context)
+        public void Execute(FlickrContext context)
         {
             if (context.Type != FileOperationType.Added)
                 return;

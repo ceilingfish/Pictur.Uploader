@@ -97,17 +97,31 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\System.Spatial.5.6.2\lib\net40\System.Spatial.dll</HintPath>
     </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileSystem\AddedFileEnumerator.cs" />
+    <Compile Include="Flickr\AlbumStrategy.cs" />
+    <Compile Include="Flickr\ApiException.cs" />
+    <Compile Include="Flickr\ApiWrapper.cs" />
+    <Compile Include="Flickr\Api\BasePhotoInfo.cs" />
+    <Compile Include="Flickr\Api\Error.cs" />
+    <Compile Include="Flickr\Api\PhotoGetInfoResult.cs" />
+    <Compile Include="Flickr\Api\PhotoSearchResult.cs" />
+    <Compile Include="Flickr\Api\Photoset.cs" />
+    <Compile Include="Flickr\DuplicateDiscovery.cs" />
+    <Compile Include="Flickr\FlickrContext.cs" />
     <Compile Include="Flickr\FlickrPipeline.cs" />
     <Compile Include="Flickr\FlickrUpload.cs" />
+    <Compile Include="Flickr\Api\PhotoSearchInfo.cs" />
+    <Compile Include="Flickr\FlickrUploadCollection.cs" />
+    <Compile Include="Flickr\ImageSize.cs" />
     <Compile Include="Flickr\Settings.cs" />
+    <Compile Include="Flickr\TokenStatus.cs" />
     <Compile Include="Flickr\UploadNewImageExecutor.cs" />
-    <Compile Include="ImageMagick\ImageDetectionFilter.cs" />
     <Compile Include="Models\PluginResource.cs" />
     <Compile Include="Persistence\Settings.cs" />
     <Compile Include="Persistence\DirectoryChangePoller.cs" />
@@ -145,7 +159,9 @@
   <ItemGroup>
     <Compile Include="Helpers\ChecksumHelper.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="ImageManipulation\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
