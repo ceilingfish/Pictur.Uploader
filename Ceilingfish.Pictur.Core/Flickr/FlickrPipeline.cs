@@ -18,7 +18,7 @@ namespace Ceilingfish.Pictur.Core.Flickr
             _db = db;
             _activeChain = new ExecutorChain<FlickrContext>
             {
-                new DuplicateDiscovery(db),
+                new PopulateUploadDiscovery(db),
                 new UploadNewImageExecutor(db)
             };
             _invalidTokenChain = new ExecutorChain<FlickrContext>

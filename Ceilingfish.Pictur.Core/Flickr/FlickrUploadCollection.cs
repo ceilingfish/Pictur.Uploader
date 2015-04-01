@@ -22,13 +22,12 @@ namespace Ceilingfish.Pictur.Core.Flickr
             }
         }
 
-        public FlickrUpload GetPhotoByFlickrIdAndFileId(string flickrId, string fileId)
+        public FlickrUpload GetByFileId(string fileId)
         {
             using (var session = Store.OpenSession())
             {
                 return session
                     .Query<FlickrUpload>()
-                    .Where(p => p.PhotoId.Equals(flickrId))
                     .SingleOrDefault(p => p.FileId.Equals(fileId));
             }
         }

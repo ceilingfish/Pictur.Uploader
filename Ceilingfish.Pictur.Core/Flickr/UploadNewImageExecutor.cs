@@ -14,7 +14,7 @@ namespace Ceilingfish.Pictur.Core.Flickr
 
         public void Execute(FlickrContext context)
         {
-            if (context.Type != FileOperationType.Added)
+            if (context.Type != FileOperationType.Added && context.Upload == null)
                 return;
 
             var flickr = new FlickrNet.Flickr(_db.Settings.Flickr.ApiKey);

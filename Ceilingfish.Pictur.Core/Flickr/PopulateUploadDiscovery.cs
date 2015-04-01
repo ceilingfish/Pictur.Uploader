@@ -5,31 +5,61 @@ using Ceilingfish.Pictur.Core.Pipeline;
 using ImageMagick;
 using System;
 using System.Linq;
+using Ceilingfish.Pictur.Core.Flickr.Api;
+using System.Collections.Generic;
 
 namespace Ceilingfish.Pictur.Core.Flickr
 {
-    public class DuplicateDiscovery : IExecutor<FlickrContext>
+    public class PopulateUploadDiscovery : IExecutor<FlickrContext>
     {
         private readonly IDatabase _db;
 
-        public DuplicateDiscovery(IDatabase db)
+        public PopulateUploadDiscovery(IDatabase db)
         {
             _db = db;
         }
 
         public void Execute(FlickrContext context)
         {
+            switch (context.Type)
+            {
+                case FileOperationType.Added:
+                    context.Upload = FindDuplicate(context);
+                    break;
+                default:
+                    context.Upload = LookupUpload(context);
+                    break;
+            }
+        }
+
+        private FlickrUpload LookupUpload(FlickrContext context)
+        {
+            return _db.FlickrUploads.GetByFileId(context.File.Id);
+        }
+
+        private FlickrUpload FindDuplicate(FlickrContext context)
+        {
+
+            var upload = LookupUpload(context);
+
+            if (upload != null)
+                return upload;
+
             var wrapper = new ApiWrapper(_db);
 
             var name = Path.GetFileNameWithoutExtension(context.File.Path);
 
-            var photos = wrapper.SearchByName(name);
+            var photos = wrapper
+                        .SearchByName(name)
+                        .Where(p => CompareCaptureDate(context.ImageData.GetExifProfile(), p.DateTaken));
 
+            return FindDuplicateImage(context, photos);
+        }
+
+        private FlickrUpload FindDuplicateImage(FlickrContext context, IEnumerable<PhotoSearchInfo> photos)
+        {
             foreach (var photo in photos)
             {
-                if (!CompareCaptureDate(context.ImageData.GetExifProfile(), photo.DateTaken))
-                    continue;
-
                 //try and avoid loading image data if at all possible
                 try
                 {
@@ -39,13 +69,13 @@ namespace Ceilingfish.Pictur.Core.Flickr
                     using (var image = new MagickImage(stream))
                     {
                         if (!CompareImageData(context.ImageData, image))
-                            continue;
-
-                        var upload = _db.FlickrUploads.GetPhotoByFlickrIdAndFileId(photo.Id, context.File.Id);
-                        if (upload != null)
                         {
-                            context.Upload = upload;
-                            return;
+                            //Found duplicate!
+                            var upload = new FlickrUpload { FileId = context.File.Id, PhotoId = photo.Id };
+
+                            _db.FlickrUploads.Add(upload);
+
+                            return upload;
                         }
                     }
 
@@ -56,7 +86,9 @@ namespace Ceilingfish.Pictur.Core.Flickr
                 }
             }
 
+            return null;
         }
+
 
         private bool CompareCaptureDate(ExifProfile exifProfile, DateTime dateTime)
         {

@@ -112,7 +112,7 @@
     <Compile Include="Flickr\Api\PhotoGetInfoResult.cs" />
     <Compile Include="Flickr\Api\PhotoSearchResult.cs" />
     <Compile Include="Flickr\Api\Photoset.cs" />
-    <Compile Include="Flickr\DuplicateDiscovery.cs" />
+    <Compile Include="Flickr\PopulateUploadDiscovery.cs" />
     <Compile Include="Flickr\FlickrContext.cs" />
     <Compile Include="Flickr\FlickrPipeline.cs" />
     <Compile Include="Flickr\FlickrUpload.cs" />
