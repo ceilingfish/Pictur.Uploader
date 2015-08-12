@@ -1,5 +1,6 @@
 ﻿using Ceilingfish.Pictur.Core.Persistence;
 using Ceilingfish.Pictur.Core.Pipeline;
+using System.IO;
 
 namespace Ceilingfish.Pictur.Core.Flickr
 {
@@ -14,16 +15,21 @@ namespace Ceilingfish.Pictur.Core.Flickr
 
         public void Execute(FlickrContext context)
         {
-            if (context.Type != FileOperationType.Added && context.Upload == null)
-                return;
+            if (context.FileOperation == FileOperationType.Added && context.UploadState == FlickrUploadState.New)
+            {
+                var api = new ApiWrapper(_db);
+                var id = api.UploadPhoto(context.File.Path, GetName(context));
+                api.UploadPhoto(context.File.Path, GetName(context));
 
-            var flickr = new FlickrNet.Flickr(_db.Settings.Flickr.ApiKey);
+                var record = new FlickrUpload { FileId = context.File.Id, PhotoId = id };
 
-            var id = flickr.UploadPicture(context.File.Path);
+                _db.FlickrUploads.Add(record);
+            }
+        }
 
-            var record = new FlickrUpload { FileId = context.File.Id, PhotoId = id };
-
-            _db.FlickrUploads.Add(record);
+        private string GetName(FlickrContext context)
+        {
+            return Path.GetFileNameWithoutExtension(context.File.Path);
         }
     }
 }

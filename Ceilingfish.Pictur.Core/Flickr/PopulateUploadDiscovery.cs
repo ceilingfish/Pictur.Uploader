@@ -10,26 +10,34 @@ using System.Collections.Generic;
 
 namespace Ceilingfish.Pictur.Core.Flickr
 {
-    public class PopulateUploadDiscovery : IExecutor<FlickrContext>
+    public class ResolveUploadState : IExecutor<FlickrContext>
     {
         private readonly IDatabase _db;
 
-        public PopulateUploadDiscovery(IDatabase db)
+        public ResolveUploadState(IDatabase db)
         {
             _db = db;
         }
 
         public void Execute(FlickrContext context)
         {
-            switch (context.Type)
+            var upload = LookupUpload(context);
+
+            if (upload != null)
             {
-                case FileOperationType.Added:
-                    context.Upload = FindDuplicate(context);
-                    break;
-                default:
-                    context.Upload = LookupUpload(context);
-                    break;
+                context.Upload = upload;
+                context.UploadState = FlickrUploadState.Uploaded;
+                return;
             }
+            upload = FindDuplicate(context);
+
+            if (upload != null)
+            {
+                context.Upload = upload;
+                context.UploadState = FlickrUploadState.Duplicate;
+            }
+
+            context.Upload = upload;
         }
 
         private FlickrUpload LookupUpload(FlickrContext context)
@@ -39,12 +47,6 @@ namespace Ceilingfish.Pictur.Core.Flickr
 
         private FlickrUpload FindDuplicate(FlickrContext context)
         {
-
-            var upload = LookupUpload(context);
-
-            if (upload != null)
-                return upload;
-
             var wrapper = new ApiWrapper(_db);
 
             var name = Path.GetFileNameWithoutExtension(context.File.Path);

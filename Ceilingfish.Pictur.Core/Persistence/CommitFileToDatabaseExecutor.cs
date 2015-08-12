@@ -13,7 +13,7 @@ namespace Ceilingfish.Pictur.Core.Persistence
 
         public void Execute(ExecutorContext op)
         {
-            switch (op.Type)
+            switch (op.FileOperation)
             {
                 case FileOperationType.Added:
                     _db.Files.Add(op.File);

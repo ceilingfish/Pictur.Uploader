@@ -18,7 +18,7 @@ namespace Ceilingfish.Pictur.Core.Flickr
             _db = db;
             _activeChain = new ExecutorChain<FlickrContext>
             {
-                new PopulateUploadDiscovery(db),
+                new ResolveUploadState(db),
                 new UploadNewImageExecutor(db)
             };
             _invalidTokenChain = new ExecutorChain<FlickrContext>
@@ -37,7 +37,7 @@ namespace Ceilingfish.Pictur.Core.Flickr
             var chain = status == FlickrStatus.TokenInvalid ? _invalidTokenChain : _activeChain;
             try
             {
-                using (var context = new FlickrContext(op.File, op.Type))
+                using (var context = new FlickrContext(op.File, op.FileOperation))
                 {
                     chain.Execute(context);
                 }

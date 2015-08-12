@@ -7,10 +7,12 @@ namespace Ceilingfish.Pictur.Core.Flickr
 {
     public class FlickrContext : ExecutorContext, IDisposable
     {
-        public FlickrUpload Upload { get; set; }
+        internal FlickrUpload Upload { get; set; }
+
+        internal FlickrUploadState UploadState { get; set; }
 
         private MagickImage _imageData;
-        public MagickImage ImageData
+        internal MagickImage ImageData
         {
             get
             {
@@ -21,7 +23,7 @@ namespace Ceilingfish.Pictur.Core.Flickr
             }
         }
 
-        public FlickrContext(File file, FileOperationType type)
+        internal FlickrContext(File file, FileOperationType type)
             : base(file, type)
         {
         }

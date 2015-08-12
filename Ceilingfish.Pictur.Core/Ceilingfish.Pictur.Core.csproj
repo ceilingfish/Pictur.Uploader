@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Ceilingfish.Pictur.Core</RootNamespace>
     <AssemblyName>Ceilingfish.Pictur.Core</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -92,6 +92,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Security" />
     <Reference Include="System.Spatial, Version=5.6.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -112,6 +113,7 @@
     <Compile Include="Flickr\Api\PhotoGetInfoResult.cs" />
     <Compile Include="Flickr\Api\PhotoSearchResult.cs" />
     <Compile Include="Flickr\Api\Photoset.cs" />
+    <Compile Include="Flickr\FlickrOperationState.cs" />
     <Compile Include="Flickr\PopulateUploadDiscovery.cs" />
     <Compile Include="Flickr\FlickrContext.cs" />
     <Compile Include="Flickr\FlickrPipeline.cs" />
@@ -121,7 +123,9 @@
     <Compile Include="Flickr\ImageSize.cs" />
     <Compile Include="Flickr\Settings.cs" />
     <Compile Include="Flickr\TokenStatus.cs" />
+    <Compile Include="Flickr\UploadModifiedImage.cs" />
     <Compile Include="Flickr\UploadNewImageExecutor.cs" />
+    <Compile Include="Flickr\Visibility.cs" />
     <Compile Include="Models\PluginResource.cs" />
     <Compile Include="Persistence\Settings.cs" />
     <Compile Include="Persistence\DirectoryChangePoller.cs" />

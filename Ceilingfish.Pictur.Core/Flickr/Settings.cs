@@ -8,5 +8,6 @@
         public string UserId { get; set; }
         public FlickrStatus Status { get; set; }
         public AlbumStrategy AlbumStrategy { get; set; }
+        public Visibility Visibility { get; set; }
     }
 }

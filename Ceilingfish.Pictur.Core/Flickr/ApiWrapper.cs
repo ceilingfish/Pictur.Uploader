@@ -6,13 +6,17 @@ using System.Web;
 using Ceilingfish.Pictur.Core.Flickr.Api;
 using Ceilingfish.Pictur.Core.Persistence;
 using Newtonsoft.Json;
+using System.Text;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Ceilingfish.Pictur.Core.Flickr
 {
     public class ApiWrapper
     {
-        private static readonly DateTime Epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private const string ApiUrl = @"https://api.flickr.com/services/rest/";
+        private const string ReplaceUrl = @"https://up.flickr.com/services/replace/";
+        private const string UploadUrl = @"https://up.flickr.com/services/upload/";
 
         private readonly IDatabase _db;
 
@@ -78,10 +82,6 @@ namespace Ceilingfish.Pictur.Core.Flickr
 
         private T CallApi<T>(string method, Dictionary<string, string> parameters)
         {
-            var d = (DateTime.UtcNow - Epoch);
-
-            var timestamp = (int)d.TotalSeconds;
-
             parameters = new Dictionary<string, string>(parameters)
 			{
 				{"method", method},
@@ -99,7 +99,7 @@ namespace Ceilingfish.Pictur.Core.Flickr
             }
             var uri = new UriBuilder(ApiUrl) { Query = queryString.ToString() };
 
-            var client = new WebClient();
+            var client = new WebClient { Encoding = Encoding.UTF8 };
             try
             {
                 var response = client.DownloadString(uri.ToString());
@@ -126,6 +126,12 @@ namespace Ceilingfish.Pictur.Core.Flickr
                     }
                 }
             }
+        }
+
+        internal string UploadPhoto(string file, string name)
+        {
+            var client = new FlickrNet.Flickr(ApiKey);
+            return client.UploadPicture(file, name);
         }
     }
 }

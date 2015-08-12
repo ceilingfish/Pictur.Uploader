@@ -6,12 +6,12 @@ namespace Ceilingfish.Pictur.Core.Pipeline
     public class ExecutorContext
     {
         public readonly File File;
-        public readonly FileOperationType Type;
+        public readonly FileOperationType FileOperation;
 
         public ExecutorContext(File file, FileOperationType type)
         {
             File = file;
-            Type = type;
+            FileOperation = type;
         }
     }
 }
