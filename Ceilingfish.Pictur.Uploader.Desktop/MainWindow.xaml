@@ -2,13 +2,16 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:Ceilingfish.Pictur.Uploader.Desktop" x:Class="Ceilingfish.Pictur.Uploader.Desktop.MainWindow"
-        Title="MainWindow" Height="350" Width="525" x:Name="TheWindow">
+        Title="Pictur Image Uploader" Height="350" Width="525" x:Name="TheWindow">
     <TabControl HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
         <TabItem Header="Directories">
             <local:ManagedDirectoryControls x:Name="DirectoryControls" />
         </TabItem>
         <TabItem Header="Status">
             <local:FileStatus x:Name="FileStatus" />
+        </TabItem>
+        <TabItem Header="Upload Controls">
+            <local:UploaderControls x:Name="UploaderControls" />
         </TabItem>
     </TabControl>
 </Window>
