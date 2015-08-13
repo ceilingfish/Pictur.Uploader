@@ -46,7 +46,8 @@ namespace Ceilingfish.Pictur.Core
             if (!_token.IsCancellationRequested)
                 _internalCancellation.Cancel();
 
-            _task.Wait(_token);
+            if(_task.Status == TaskStatus.Running)
+              _task.Wait(_token);
         }
 
         private void ExecuteInternal()
