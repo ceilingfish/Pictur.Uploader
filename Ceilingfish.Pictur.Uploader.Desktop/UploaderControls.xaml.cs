@@ -15,14 +15,51 @@ using System.Windows.Shapes;
 
 namespace Ceilingfish.Pictur.Uploader.Desktop
 {
-    /// <summary>
-    /// Interaction logic for UploaderControls.xaml
-    /// </summary>
     public partial class UploaderControls : UserControl
     {
+        private Core.Uploader inProcessUploader;
+
         public UploaderControls()
         {
             InitializeComponent();
+        }
+
+        internal void Stop()
+        {
+            if(inProcessUploader != null)
+            {
+                inProcessUploader.Stop();
+            }
+        }
+
+        private void OnToggleUploaderRunningButtonClicked(object sender, RoutedEventArgs e)
+        {
+            if(inProcessUploader == null)
+            {
+                UploaderStateLabel.Content = "Starting";
+                UploaderStateLabel.Foreground = Brushes.LightGoldenrodYellow;
+                ToggleUploaderRunningButton.Content = "Starting";
+                ToggleUploaderRunningButton.IsEnabled = false;
+                inProcessUploader = new Core.Uploader();
+                inProcessUploader.Start();
+                UploaderStateLabel.Content = "Running";
+                UploaderStateLabel.Foreground = Brushes.Green;
+                ToggleUploaderRunningButton.Content = "Stop";
+                ToggleUploaderRunningButton.IsEnabled = true;
+            }
+            else
+            {
+                UploaderStateLabel.Content = "Stopping";
+                UploaderStateLabel.Foreground = Brushes.LightGoldenrodYellow;
+                ToggleUploaderRunningButton.Content = "Stopping";
+                ToggleUploaderRunningButton.IsEnabled = false;
+                inProcessUploader.Stop();
+                inProcessUploader = null;
+                UploaderStateLabel.Content = "Stopped";
+                UploaderStateLabel.Foreground = Brushes.Red;
+                ToggleUploaderRunningButton.Content = "Start";
+                ToggleUploaderRunningButton.IsEnabled = true;
+            }
         }
     }
 }

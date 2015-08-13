@@ -38,7 +38,7 @@ namespace Ceilingfish.Pictur.Core
 
         public Task Start()
         {
-            return _task ?? Task.Run((Action)ExecuteInternal, _token);
+            return _task ?? (_task = Task.Run((Action)ExecuteInternal, _token));
         }
 
         public void Stop()

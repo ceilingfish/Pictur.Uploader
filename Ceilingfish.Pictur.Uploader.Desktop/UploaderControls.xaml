@@ -10,7 +10,7 @@
         <SolidColorBrush x:Key="UploaderStateColour" Color="Red"  />
     </UserControl.Resources>
     <Grid>
-        <Button x:Name="button" Content="Start" Margin="0,16,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="75"/>
+        <Button x:Name="ToggleUploaderRunningButton" Content="Start" Margin="0,16,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="75" Click="OnToggleUploaderRunningButtonClicked"/>
         <Label x:Name="label" Content="Uploader is..." HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.112,-2.435"/>
         <Label Content="Upload when Pictur is closed?" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top"/>
         <CheckBox x:Name="RunUploaderAsAServiceCheckbox" Content="" Margin="0,56,38,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="20"/>
