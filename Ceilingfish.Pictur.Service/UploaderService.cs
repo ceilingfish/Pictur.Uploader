@@ -24,13 +24,13 @@ namespace Ceilingfish.Pictur.Service
         protected override void OnStart(string[] args)
         {
             _uploaderExecution = new Uploader(_token.Token);
-            _uploaderExecution.Execute();
+            _uploaderExecution.Start();
         }
 
         protected override void OnStop()
         {
             _token.Cancel();
-            _uploaderExecution.Wait();
+            _uploaderExecution.Stop();
             base.OnStop();
         }
     }

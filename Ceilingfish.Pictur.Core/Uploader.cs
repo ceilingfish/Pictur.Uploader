@@ -7,27 +7,46 @@ using Ceilingfish.Pictur.Core.Persistence;
 using Ceilingfish.Pictur.Core.Pipeline;
 using Serilog;
 
-namespace Ceilingfish.Pictur.Service
+namespace Ceilingfish.Pictur.Core
 {
     public class Uploader
     {
         private static readonly ILogger Log = Serilog.Log.Logger.ForContext<Uploader>();
         private readonly CancellationToken _token;
-        private readonly CancellationTokenSource _errorCancellation;
+        private readonly CancellationTokenSource _internalCancellation;
         private Task _task;
-
-        public Uploader(CancellationToken token)
+        
+        public TaskStatus Status
         {
-            _errorCancellation = new CancellationTokenSource();
-            _token = CancellationTokenSource.CreateLinkedTokenSource(token, _errorCancellation.Token).Token;
+            get
+            {
+                return _task?.Status ?? TaskStatus.Created;
+            }
         }
 
-        public Task Execute()
+        public Uploader()
         {
-            if (_task == null)
-                _task = Task.Run((Action)ExecuteInternal, _token);
+            _internalCancellation = new CancellationTokenSource();
+            _token = _internalCancellation.Token;
+        }
 
-            return _task;
+        public Uploader(CancellationToken token)
+            : this()
+        {
+            _token = CancellationTokenSource.CreateLinkedTokenSource(token, _internalCancellation.Token).Token;
+        }
+
+        public Task Start()
+        {
+            return _task ?? Task.Run((Action)ExecuteInternal, _token);
+        }
+
+        public void Stop()
+        {
+            if (!_token.IsCancellationRequested)
+                _internalCancellation.Cancel();
+
+            _task.Wait(_token);
         }
 
         private void ExecuteInternal()
@@ -61,12 +80,7 @@ namespace Ceilingfish.Pictur.Service
         private void HandleExecutorException(object sender, ExecutorExceptionArgs executorExceptionArgs)
         {
             Log.Fatal(executorExceptionArgs.Exception, "Unhandled exception processing @executorExceptionArgs.Context", executorExceptionArgs);
-            _errorCancellation.Cancel();
-        }
-
-        internal void Wait()
-        {
-            _task.Wait(_token);
+            _internalCancellation.Cancel();
         }
     }
 }

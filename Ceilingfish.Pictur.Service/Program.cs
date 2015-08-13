@@ -3,6 +3,7 @@ using System.Linq;
 using System.ServiceProcess;
 using System.Threading;
 using Serilog;
+using Ceilingfish.Pictur.Core;
 
 namespace Ceilingfish.Pictur.Service
 {
@@ -28,9 +29,8 @@ namespace Ceilingfish.Pictur.Service
                     .WriteTo
                     .ColoredConsole()
                     .CreateLogger();
-                var token = new CancellationTokenSource();
-                var uploader = new Uploader(token.Token);
-                uploader.Execute();
+                var uploader = new Uploader();
+                uploader.Start();
 
                 if (!Console.IsInputRedirected)
                 {
@@ -41,10 +41,8 @@ namespace Ceilingfish.Pictur.Service
                     {
                         key = Console.ReadKey();
                     }
-
-                    token.Cancel();
                 }
-                uploader.Wait();
+                uploader.Stop();
             }
         }
     }

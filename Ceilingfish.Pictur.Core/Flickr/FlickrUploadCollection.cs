@@ -21,15 +21,5 @@ namespace Ceilingfish.Pictur.Core.Flickr
                     .Where(p => p.PhotoId.Equals(flickrId));
             }
         }
-
-        public FlickrUpload GetByFileId(string fileId)
-        {
-            using (var session = Store.OpenSession())
-            {
-                return session
-                    .Query<FlickrUpload>()
-                    .SingleOrDefault(p => p.FileId.Equals(fileId));
-            }
-        }
     }
 }
