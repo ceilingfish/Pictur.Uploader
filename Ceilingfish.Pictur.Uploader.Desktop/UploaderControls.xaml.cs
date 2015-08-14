@@ -32,34 +32,43 @@ namespace Ceilingfish.Pictur.Uploader.Desktop
             }
         }
 
-        private void OnToggleUploaderRunningButtonClicked(object sender, RoutedEventArgs e)
+        private async void OnToggleUploaderRunningButtonClicked(object sender, RoutedEventArgs e)
         {
             if(inProcessUploader == null)
             {
-                UploaderStateLabel.Content = "Starting";
-                UploaderStateLabel.Foreground = Brushes.LightGoldenrodYellow;
-                ToggleUploaderRunningButton.Content = "Starting";
-                ToggleUploaderRunningButton.IsEnabled = false;
-                inProcessUploader = new Core.Uploader();
-                inProcessUploader.Start();
-                UploaderStateLabel.Content = "Running";
-                UploaderStateLabel.Foreground = Brushes.Green;
-                ToggleUploaderRunningButton.Content = "Stop";
-                ToggleUploaderRunningButton.IsEnabled = true;
+                await ToggleUploaderState("Starting", "Running", "Stop", StartInProcessUploader);
             }
             else
             {
-                UploaderStateLabel.Content = "Stopping";
-                UploaderStateLabel.Foreground = Brushes.LightGoldenrodYellow;
-                ToggleUploaderRunningButton.Content = "Stopping";
-                ToggleUploaderRunningButton.IsEnabled = false;
-                inProcessUploader.Stop();
-                inProcessUploader = null;
-                UploaderStateLabel.Content = "Stopped";
-                UploaderStateLabel.Foreground = Brushes.Red;
-                ToggleUploaderRunningButton.Content = "Start";
-                ToggleUploaderRunningButton.IsEnabled = true;
+                await ToggleUploaderState("Stopping", "Stopped", "Start", StopInProcessUploader);
             }
+        }
+
+        private async Task StartInProcessUploader()
+        {
+            inProcessUploader = new Core.Uploader();
+            await inProcessUploader.Start();
+        }
+
+        private async Task StopInProcessUploader()
+        {
+            await inProcessUploader.StopAsync();
+            inProcessUploader = null;
+        }
+
+        private async Task ToggleUploaderState(string intermediaryState, string targetState, string inverseState, Func<Task> action)
+        {
+            var intermediaryResource = Resources[$"{intermediaryState}UploaderState"] as Brush;
+            var targetStateResource = Resources[$"{targetState}UploaderState"] as Brush;
+            UploaderStateLabel.Content = intermediaryState;
+            UploaderStateLabel.Foreground = intermediaryResource;
+            ToggleUploaderRunningButton.Content = intermediaryState;
+            ToggleUploaderRunningButton.IsEnabled = false;
+            await action();
+            UploaderStateLabel.Content = targetState;
+            UploaderStateLabel.Foreground = targetStateResource;
+            ToggleUploaderRunningButton.Content = inverseState;
+            ToggleUploaderRunningButton.IsEnabled = true;
         }
     }
 }

@@ -43,11 +43,21 @@ namespace Ceilingfish.Pictur.Core
 
         public void Stop()
         {
+            var task = StopAsync();
+
+            if (task.Status == TaskStatus.Running)
+                task.Wait(_token);
+
+            if (task.IsFaulted)
+                throw task.Exception;
+        }
+
+        public Task StopAsync()
+        {
             if (!_token.IsCancellationRequested)
                 _internalCancellation.Cancel();
 
-            if(_task.Status == TaskStatus.Running)
-              _task.Wait(_token);
+            return _task;
         }
 
         private void ExecuteInternal()
